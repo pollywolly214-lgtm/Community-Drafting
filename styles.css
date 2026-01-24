@@ -37,7 +37,7 @@ a {
 }
 
 .brand img {
-  width: 56px;
+  width: clamp(96px, 12vw, 140px);
   height: auto;
   display: block;
 }
