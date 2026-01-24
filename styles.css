@@ -16,6 +16,12 @@ a {
   text-decoration: none;
 }
 
+.top-bar {
+  background: #d7dbe2;
+  height: 12px;
+  width: 100%;
+}
+
 .site-header {
   background: linear-gradient(135deg, #eff5ff 0%, #f8f4ff 100%);
   padding: 32px 6vw 64px;
@@ -31,13 +37,14 @@ a {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   font-weight: 700;
   letter-spacing: 0.04em;
+  width: 100%;
 }
 
 .brand img {
-  width: 96px;
+  width: 180px;
   height: auto;
   display: block;
 }
