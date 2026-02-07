@@ -415,7 +415,7 @@ button {
 
 .hero-card--note {
   border-radius: 18px;
-  background: #1c4ed8;
+  background: linear-gradient(135deg, #1c4ed8 0%, #2563eb 45%, #0ea5e9 100%);
   color: #fff;
   box-shadow: 0 16px 36px rgba(28, 78, 216, 0.35);
 }
@@ -423,27 +423,34 @@ button {
 .hero-note__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: rgba(226, 232, 240, 0.9);
 }
 
 .hero-note__title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: #fff;
+  letter-spacing: 0.02em;
 }
 
 .hero-note__body {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: rgba(248, 250, 252, 0.95);
-  line-height: 1.6;
+  line-height: 1.7;
+  text-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
 }
 
 .hero-note__body a {
   color: #f8fafc;
   font-weight: 600;
   text-decoration: underline;
+}
+
+.hero-note__body strong {
+  color: #fef08a;
+  font-weight: 800;
 }
 
 .hero-card ul {
