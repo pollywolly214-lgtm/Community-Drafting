@@ -137,6 +137,25 @@ a {
   animation: loop-spin 28s linear infinite reverse;
 }
 
+.cad-mobius--ribbon {
+  width: min(44vw, 420px);
+  height: min(44vw, 420px);
+  right: 12%;
+  top: -18%;
+  background: conic-gradient(
+    from 200deg,
+    rgba(14, 165, 233, 0),
+    rgba(59, 130, 246, 0.28),
+    rgba(168, 85, 247, 0.2),
+    rgba(14, 165, 233, 0)
+  );
+  -webkit-mask: radial-gradient(circle, transparent 70%, #000 72%);
+  mask: radial-gradient(circle, transparent 70%, #000 72%);
+  opacity: 0.45;
+  filter: blur(0.3px);
+  animation: loop-spin 34s linear infinite;
+}
+
 body.page-services .site-header {
   background: linear-gradient(135deg, #e0edff 0%, #f6fbff 100%);
 }
