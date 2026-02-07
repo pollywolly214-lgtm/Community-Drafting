@@ -97,10 +97,10 @@ a {
 
 .cad-mobius {
   position: absolute;
-  width: min(60vw, 520px);
-  height: min(60vw, 520px);
-  right: -14%;
-  top: 12%;
+  width: min(70vw, 640px);
+  height: min(70vw, 640px);
+  right: -20%;
+  top: 6%;
   border-radius: 50%;
   background: conic-gradient(
     from 110deg,
@@ -112,7 +112,7 @@ a {
   -webkit-mask: radial-gradient(circle, transparent 58%, #000 60%);
   mask: radial-gradient(circle, transparent 58%, #000 60%);
   opacity: 0.6;
-  filter: blur(0.2px);
+  filter: blur(0.4px);
   transform: rotate(22deg);
   animation: loop-spin 22s linear infinite;
   pointer-events: none;
@@ -423,19 +423,19 @@ button {
 .hero-note__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: rgba(226, 232, 240, 0.9);
 }
 
 .hero-note__title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: #fff;
 }
 
 .hero-note__body {
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: rgba(248, 250, 252, 0.95);
   line-height: 1.6;
 }
