@@ -23,20 +23,24 @@
           <img
             src="assets/community-drafting-logo.svg"
             alt="Community Drafting logo"
+            data-admin-image="brand-logo"
           />
-          <span>Community Drafting</span>
+          <span data-admin-key="brand-name">Community Drafting</span>
         </div>
         <div class="nav-links">
           <a href="#services">Services</a>
           <a href="#process">Process</a>
+          <a href="#updates">Updates</a>
           <a href="#contact">Contact</a>
         </div>
       </nav>
       <section class="hero">
         <div class="hero-content">
-          <p class="eyebrow">Drafting support for growing communities</p>
-          <h1>Clear plans. Confident builds.</h1>
-          <p class="hero-subtext">
+          <p class="eyebrow" data-admin-key="hero-eyebrow">
+            Drafting support for growing communities
+          </p>
+          <h1 data-admin-key="hero-title">Clear plans. Confident builds.</h1>
+          <p class="hero-subtext" data-admin-key="hero-subtext">
             We help homeowners, builders, and design teams translate ideas into
             precise construction-ready drawings.
           </p>
@@ -46,12 +50,12 @@
           </div>
         </div>
         <div class="hero-card">
-          <h2>Available for new projects</h2>
-          <p>
+          <h2 data-admin-key="hero-card-title">Available for new projects</h2>
+          <p data-admin-key="hero-card-body">
             Share your scope and timelines. We will outline deliverables,
             drawing packages, and next steps within 48 hours.
           </p>
-          <ul>
+          <ul data-admin-list="hero-highlights">
             <li>Residential &amp; light commercial drafting</li>
             <li>Plan revisions and permit-ready sets</li>
             <li>Collaboration with architects and engineers</li>
@@ -62,25 +66,27 @@
 
     <main>
       <section id="services" class="section">
-        <h2>Drafting services built for clarity</h2>
+        <h2 data-admin-key="services-title">
+          Drafting services built for clarity
+        </h2>
         <div class="grid">
           <article class="card">
-            <h3>Concept to construction sets</h3>
-            <p>
+            <h3 data-admin-key="service-1-title">Concept to construction sets</h3>
+            <p data-admin-key="service-1-body">
               Coordinate floor plans, elevations, and details into a complete
               drawing package for permitting and build execution.
             </p>
           </article>
           <article class="card">
-            <h3>As-builts and renovations</h3>
-            <p>
+            <h3 data-admin-key="service-2-title">As-builts and renovations</h3>
+            <p data-admin-key="service-2-body">
               Capture existing conditions and translate updates into clean,
               accurate documentation.
             </p>
           </article>
           <article class="card">
-            <h3>Team coordination</h3>
-            <p>
+            <h3 data-admin-key="service-3-title">Team coordination</h3>
+            <p data-admin-key="service-3-body">
               Keep architects, engineers, and contractors aligned with structured
               revision logs and consistent sheet standards.
             </p>
@@ -89,30 +95,98 @@
       </section>
 
       <section id="process" class="section alt">
-        <h2>How we work</h2>
+        <h2 data-admin-key="process-title">How we work</h2>
         <div class="steps">
           <div>
             <span>01</span>
-            <h3>Discovery</h3>
-            <p>
+            <h3 data-admin-key="process-1-title">Discovery</h3>
+            <p data-admin-key="process-1-body">
               Review scope, goals, and existing sketches to shape the drafting
               plan.
             </p>
           </div>
           <div>
             <span>02</span>
-            <h3>Drafting</h3>
-            <p>
+            <h3 data-admin-key="process-2-title">Drafting</h3>
+            <p data-admin-key="process-2-body">
               Build plans, elevations, and details with clear annotations and
               layered drawing sets.
             </p>
           </div>
           <div>
             <span>03</span>
-            <h3>Delivery</h3>
-            <p>
+            <h3 data-admin-key="process-3-title">Delivery</h3>
+            <p data-admin-key="process-3-body">
               Provide editable and PDF deliverables along with revision-ready
               file organization.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 data-admin-key="highlights-title">Project highlights</h2>
+        <div class="image-grid">
+          <figure class="image-card">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Drafting highlight"
+              data-admin-image="highlight-1"
+            />
+            <figcaption data-admin-key="highlight-1-caption">
+              Full construction set for a modern duplex build.
+            </figcaption>
+          </figure>
+          <figure class="image-card">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Drafting highlight"
+              data-admin-image="highlight-2"
+            />
+            <figcaption data-admin-key="highlight-2-caption">
+              Permit-ready renovation plans with layered annotations.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="updates" class="section">
+        <h2 data-admin-key="updates-title">Latest updates</h2>
+        <p class="section-subtext" data-admin-key="updates-subtext">
+          Share announcements, milestones, or seasonal scheduling updates.
+        </p>
+        <div class="grid" data-admin-list="updates">
+          <article class="card">
+            <h3>Now booking for Q3</h3>
+            <p>
+              Reserve drafting slots for summer renovations and permitting
+              packages.
+            </p>
+          </article>
+          <article class="card">
+            <h3>New turnaround time</h3>
+            <p>
+              Standard plan revisions are delivered in 5 business days or less.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="pricing">
+          <div>
+            <h2 data-admin-key="pricing-title">Newsletter + pricing</h2>
+            <p data-admin-key="pricing-body">
+              Keep clients informed with a monthly update and consistent pricing
+              details.
+            </p>
+          </div>
+          <div class="pricing-card">
+            <h3 data-admin-key="pricing-plan">Drafting update plan</h3>
+            <p class="price" data-admin-key="pricing-amount">$180 / month</p>
+            <p data-admin-key="pricing-details">
+              Includes two plan updates, one consultation call, and priority
+              scheduling.
             </p>
           </div>
         </div>
@@ -121,11 +195,65 @@
 
     <footer id="contact" class="footer">
       <div>
-        <h2>Let us help with your next build.</h2>
-        <p>Email <a href="mailto:hello@communitydrafting.com">hello@communitydrafting.com</a> to get started.</p>
+        <h2 data-admin-key="footer-title">Let us help with your next build.</h2>
+        <p data-admin-key="footer-body">
+          Email
+          <a href="mailto:hello@communitydrafting.com">hello@communitydrafting.com</a>
+          to get started.
+        </p>
       </div>
-      <p class="footer-note">© 2024 Community Drafting. All rights reserved.</p>
+      <p class="footer-note" data-admin-key="footer-note">
+        © 2024 Community Drafting. All rights reserved.
+      </p>
     </footer>
+
+    <div class="admin-panel" id="admin-panel" aria-hidden="true">
+      <div class="admin-panel__header">
+        <div>
+          <p class="admin-label">Admin tools</p>
+          <h3>Quick updates</h3>
+        </div>
+        <div class="admin-actions">
+          <button class="secondary" id="admin-save" type="button">
+            Save &amp; exit
+          </button>
+          <button class="ghost" id="admin-exit" type="button">Exit</button>
+        </div>
+      </div>
+      <div class="admin-panel__body">
+        <div class="admin-card">
+          <h4>Editing tips</h4>
+          <ul>
+            <li>Click text on the page to edit it directly.</li>
+            <li>Click images to upload a new photo.</li>
+            <li>Use the form below to add updates.</li>
+          </ul>
+        </div>
+        <div class="admin-card">
+          <h4>Add an update</h4>
+          <label>
+            Title
+            <input id="admin-update-title" type="text" placeholder="Update title" />
+          </label>
+          <label>
+            Details
+            <textarea
+              id="admin-update-body"
+              rows="3"
+              placeholder="Short announcement"
+            ></textarea>
+          </label>
+          <button class="primary" id="admin-add-update" type="button">
+            Add update
+          </button>
+        </div>
+      </div>
+      <p class="admin-footer">
+        Press <strong>Ctrl + `</strong> anytime to toggle admin mode.
+      </p>
+    </div>
+
+    <input type="file" id="admin-image-input" accept="image/*" hidden />
 
     <script src="script.js"></script>
   </body>
