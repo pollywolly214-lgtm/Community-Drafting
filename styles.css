@@ -119,6 +119,24 @@ a {
   z-index: 0;
 }
 
+.cad-mobius--outline {
+  width: min(52vw, 480px);
+  height: min(52vw, 480px);
+  left: -18%;
+  top: 28%;
+  background: conic-gradient(
+    from 40deg,
+    rgba(15, 23, 42, 0),
+    rgba(37, 99, 235, 0.2),
+    rgba(15, 23, 42, 0)
+  );
+  -webkit-mask: radial-gradient(circle, transparent 62%, #000 64%);
+  mask: radial-gradient(circle, transparent 62%, #000 64%);
+  opacity: 0.35;
+  filter: blur(0.2px);
+  animation: loop-spin 28s linear infinite reverse;
+}
+
 body.page-services .site-header {
   background: linear-gradient(135deg, #e0edff 0%, #f6fbff 100%);
 }
@@ -415,9 +433,9 @@ button {
 
 .hero-card--note {
   border-radius: 18px;
-  background: #0f172a;
-  color: #fff;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  background: #f8fafc;
+  color: #0f172a;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
 }
 
 .hero-note__eyebrow {
@@ -425,31 +443,31 @@ button {
   letter-spacing: 0.2em;
   font-size: 0.8rem;
   font-weight: 700;
-  color: rgba(226, 232, 240, 0.95);
+  color: #1d4ed8;
 }
 
 .hero-note__title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #fff;
+  color: #0f172a;
   letter-spacing: 0.02em;
 }
 
 .hero-note__body {
   font-size: 1.1rem;
-  color: rgba(248, 250, 252, 0.98);
+  color: #0f172a;
   line-height: 1.7;
-  text-shadow: 0 2px 12px rgba(15, 23, 42, 0.45);
+  text-shadow: none;
 }
 
 .hero-note__body a {
-  color: #f8fafc;
-  font-weight: 600;
+  color: #1d4ed8;
+  font-weight: 700;
   text-decoration: underline;
 }
 
 .hero-note__body strong {
-  color: #facc15;
+  color: #b45309;
   font-weight: 800;
 }
 
