@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services | Community Drafting</title>
+    <meta
+      name="description"
+      content="Explore Community Drafting services including 2D modeling, 3D modeling, and 3D printing."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="page-services">
+    <header class="site-header">
+      <nav class="nav-bar gradient-border">
+        <a class="brand" href="index.html">
+          <img
+            src="assets/community-drafting-logo.svg"
+            alt="Community Drafting logo"
+            data-admin-image="brand-logo"
+          />
+          <span data-admin-key="brand-name">Community Drafting</span>
+        </a>
+        <div class="nav-links">
+          <a class="nav-pill" href="services.html">Services</a>
+          <a class="nav-pill" href="call-designer.html">Call Designer Directly</a>
+          <a class="nav-pill" href="#schedule-visit">Schedule a Visit</a>
+          <a class="nav-pill" href="index.html#contact">Contact</a>
+        </div>
+        <a class="nav-cta" href="call-designer.html">Call a Designer</a>
+      </nav>
+      <div class="cad-mobius" aria-hidden="true"></div>
+      <div class="cad-mobius cad-mobius--outline" aria-hidden="true"></div>
+      <div class="cad-mobius cad-mobius--ribbon" aria-hidden="true"></div>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Services</p>
+          <h1>Get the drawings you need without the runaround.</h1>
+          <p class="hero-subtext">
+            You own every drawing, get what you need fast, and straight to the
+            point without hidden fees.
+          </p>
+          <div class="hero-actions">
+            <a class="primary" href="call-designer.html">Talk to a designer</a>
+            <a class="secondary" href="#portfolio">View portfolio</a>
+          </div>
+        </div>
+        <div class="hero-card gradient-border">
+          <h2>First job free. Seriously, free.</h2>
+          <p>
+            Because we love our community and you deserve a service you can
+            trust.
+          </p>
+          <p>
+            $45/hr after the first job. No additional charges ever for drawings,
+            deliverables, shops, or models.
+          </p>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="section">
+        <h2>Core services</h2>
+        <div class="grid">
+          <article class="card gradient-border">
+            <h3>3D Modeling</h3>
+            <p>
+              You own every drawing, get what you need fast, and to the point
+              without hidden fees.
+            </p>
+            <a class="text-link" href="service-3d-modeling.html">Learn more</a>
+          </article>
+          <article class="card gradient-border">
+            <h3>2D Modeling</h3>
+            <p>
+              Whatever you need, we'll layout it. Need shop drawings or room
+              layouts? Not sure? Give us a call.
+            </p>
+            <a class="text-link" href="service-2d-modeling.html">Learn more</a>
+          </article>
+          <article class="card gradient-border">
+            <h3>3D Printing</h3>
+            <p>
+              Get the part you need in your hands. We make it, print it, and
+              deliver it.
+            </p>
+            <a class="text-link" href="service-3d-printing.html">Learn more</a>
+          </article>
+          <article class="card gradient-border">
+            <h3>Schedule a Visit</h3>
+            <p>
+              Still not sure? Have a professional come see what you need hands
+              on, take measurements, and answer your questions directly.
+            </p>
+            <a class="text-link" href="schedule-visit.html">Learn more</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="portfolio" class="section alt">
+        <h2>Portfolio highlights</h2>
+        <p class="section-subtext">
+          Upload portfolio images from the admin panel to showcase recent work.
+        </p>
+        <div class="image-grid">
+          <figure class="image-card gradient-border">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Portfolio highlight"
+              data-admin-image="portfolio-1"
+            />
+            <figcaption>Custom 3D model for a fabrication build.</figcaption>
+          </figure>
+          <figure class="image-card gradient-border">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Portfolio highlight"
+              data-admin-image="portfolio-2"
+            />
+            <figcaption>Production-ready shop drawing set.</figcaption>
+          </figure>
+          <figure class="image-card gradient-border">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Portfolio highlight"
+              data-admin-image="portfolio-3"
+            />
+            <figcaption>3D printed prototype delivered to a client.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="schedule-visit" class="section">
+        <h2>Schedule a Visit</h2>
+        <p class="section-subtext">
+          First 30 minutes free. Some locations are unavailable at this time,
+          please call or join the contact list <a href="call-designer.html">here</a>.
+        </p>
+        <a class="primary" href="schedule-visit.html">Schedule now</a>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <h2>Let us help with your next build.</h2>
+        <p>
+          Email
+          <a href="mailto:hello@communitydrafting.com">hello@communitydrafting.com</a>
+          to get started.
+        </p>
+      </div>
+      <p class="footer-note">© 2024 Community Drafting. All rights reserved.</p>
+    </footer>
+
+    <div class="admin-panel" id="admin-panel" aria-hidden="true">
+      <div class="admin-panel__header">
+        <div>
+          <p class="admin-label">Admin tools</p>
+          <h3>Quick updates</h3>
+        </div>
+        <div class="admin-actions">
+          <button class="secondary" id="admin-save" type="button">
+            Save &amp; exit
+          </button>
+          <button class="ghost" id="admin-exit" type="button">Exit</button>
+        </div>
+      </div>
+      <div class="admin-panel__body">
+        <div class="admin-card">
+          <h4>Editing tips</h4>
+          <ul>
+            <li>Click text on the page to edit it directly.</li>
+            <li>Click images to upload a new photo.</li>
+            <li>Use the form below to add updates.</li>
+          </ul>
+        </div>
+        <div class="admin-card">
+          <h4>Add an update</h4>
+          <label>
+            Title
+            <input id="admin-update-title" type="text" placeholder="Update title" />
+          </label>
+          <label>
+            Details
+            <textarea
+              id="admin-update-body"
+              rows="3"
+              placeholder="Short announcement"
+            ></textarea>
+          </label>
+          <button class="primary" id="admin-add-update" type="button">
+            Add update
+          </button>
+        </div>
+      </div>
+      <p class="admin-footer">
+        Press <strong>Ctrl + `</strong> anytime to toggle admin mode.
+      </p>
+    </div>
+
+    <input type="file" id="admin-image-input" accept="image/*" hidden />
+
+    <script src="script.js"></script>
+  </body>
+</html>
