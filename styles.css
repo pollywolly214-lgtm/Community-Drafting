@@ -157,6 +157,19 @@ a {
   animation: loop-spin 40s linear infinite;
 }
 
+.cad-ribbon {
+  position: absolute;
+  width: min(110vw, 1400px);
+  height: auto;
+  left: -10%;
+  top: 18%;
+  opacity: 0.7;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
+  animation: ribbon-float 24s ease-in-out infinite;
+}
+
 body.page-services .site-header {
   background: linear-gradient(135deg, #e0edff 0%, #f6fbff 100%);
 }
@@ -691,10 +704,21 @@ button {
   }
 }
 
+@keyframes ribbon-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg);
+  }
+  50% {
+    transform: translate3d(18px, -12px, 0) rotate(2deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-header::before,
   .site-header::after,
-  .cad-mobius {
+  .cad-mobius,
+  .cad-ribbon {
     animation: none;
   }
 }
