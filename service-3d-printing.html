@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Printing | Community Drafting</title>
+    <meta
+      name="description"
+      content="3D printing services to get parts delivered fast with no hidden charges."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-bar gradient-border">
+        <a class="brand" href="index.html">
+          <img
+            src="assets/community-drafting-logo.svg"
+            alt="Community Drafting logo"
+            data-admin-image="brand-logo"
+          />
+          <span data-admin-key="brand-name">Community Drafting</span>
+        </a>
+        <div class="nav-links">
+          <a href="services.html">Services</a>
+          <a href="call-designer.html">Call Designer Directly</a>
+          <a href="services.html#schedule-visit">Schedule a Visit</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+        <a class="nav-cta" href="call-designer.html">Call a Designer</a>
+      </nav>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Service</p>
+          <h1>3D Printing</h1>
+          <p class="hero-subtext">
+            Get the part you need in your hands. We make it, print it, and
+            deliver it.
+          </p>
+          <div class="hero-actions">
+            <a class="primary" href="call-designer.html">Start a project</a>
+            <a class="secondary" href="services.html">Back to services</a>
+          </div>
+        </div>
+        <div class="hero-card gradient-border">
+          <h2>Transparent pricing</h2>
+          <p>$15/hr for print. No hidden charges.</p>
+          <p>Shipping prices can vary.</p>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="section">
+        <h2>What you get</h2>
+        <div class="grid">
+          <article class="card gradient-border">
+            <h3>Print-ready prep</h3>
+            <p>We review files and confirm specs before printing.</p>
+          </article>
+          <article class="card gradient-border">
+            <h3>Hands-on delivery</h3>
+            <p>We make, print, and deliver the part you need.</p>
+          </article>
+          <article class="card gradient-border">
+            <h3>No hidden fees</h3>
+            <p>Clear hourly pricing for every print.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <h2>Let us help with your next build.</h2>
+        <p>
+          Email
+          <a href="mailto:hello@communitydrafting.com">hello@communitydrafting.com</a>
+          to get started.
+        </p>
+      </div>
+      <p class="footer-note">© 2024 Community Drafting. All rights reserved.</p>
+    </footer>
+
+    <div class="admin-panel" id="admin-panel" aria-hidden="true">
+      <div class="admin-panel__header">
+        <div>
+          <p class="admin-label">Admin tools</p>
+          <h3>Quick updates</h3>
+        </div>
+        <div class="admin-actions">
+          <button class="secondary" id="admin-save" type="button">
+            Save &amp; exit
+          </button>
+          <button class="ghost" id="admin-exit" type="button">Exit</button>
+        </div>
+      </div>
+      <div class="admin-panel__body">
+        <div class="admin-card">
+          <h4>Editing tips</h4>
+          <ul>
+            <li>Click text on the page to edit it directly.</li>
+            <li>Click images to upload a new photo.</li>
+            <li>Use the form below to add updates.</li>
+          </ul>
+        </div>
+        <div class="admin-card">
+          <h4>Add an update</h4>
+          <label>
+            Title
+            <input id="admin-update-title" type="text" placeholder="Update title" />
+          </label>
+          <label>
+            Details
+            <textarea
+              id="admin-update-body"
+              rows="3"
+              placeholder="Short announcement"
+            ></textarea>
+          </label>
+          <button class="primary" id="admin-add-update" type="button">
+            Add update
+          </button>
+        </div>
+      </div>
+      <p class="admin-footer">
+        Press <strong>Ctrl + `</strong> anytime to toggle admin mode.
+      </p>
+    </div>
+
+    <input type="file" id="admin-image-input" accept="image/*" hidden />
+
+    <script src="script.js"></script>
+  </body>
+</html>
