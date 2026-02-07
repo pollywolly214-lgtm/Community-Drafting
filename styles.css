@@ -415,9 +415,9 @@ button {
 
 .hero-card--note {
   border-radius: 18px;
-  background: linear-gradient(135deg, #1c4ed8 0%, #2563eb 45%, #0ea5e9 100%);
+  background: #0f172a;
   color: #fff;
-  box-shadow: 0 16px 36px rgba(28, 78, 216, 0.35);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
 }
 
 .hero-note__eyebrow {
@@ -425,7 +425,7 @@ button {
   letter-spacing: 0.2em;
   font-size: 0.8rem;
   font-weight: 700;
-  color: rgba(226, 232, 240, 0.9);
+  color: rgba(226, 232, 240, 0.95);
 }
 
 .hero-note__title {
@@ -437,9 +437,9 @@ button {
 
 .hero-note__body {
   font-size: 1.1rem;
-  color: rgba(248, 250, 252, 0.95);
+  color: rgba(248, 250, 252, 0.98);
   line-height: 1.7;
-  text-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+  text-shadow: 0 2px 12px rgba(15, 23, 42, 0.45);
 }
 
 .hero-note__body a {
@@ -449,7 +449,7 @@ button {
 }
 
 .hero-note__body strong {
-  color: #fef08a;
+  color: #facc15;
   font-weight: 800;
 }
 
