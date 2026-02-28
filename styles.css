@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght,SOFT@9..144,500..700,75&display=swap");
+
 :root {
   --blue-950: #0c1f35;
   --blue-900: #14365b;
@@ -9,6 +11,8 @@
   --slate-500: #6c7685;
   --slate-200: #d7dde6;
   --white: #fff;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-strong: rgba(255, 255, 255, 0.94);
 }
 
 * { box-sizing: border-box; }
@@ -16,10 +20,13 @@
 html, body { margin: 0; padding: 0; }
 
 body {
-  font-family: "Manrope", sans-serif;
+  font-family: "Plus Jakarta Sans", "Manrope", sans-serif;
   color: var(--slate-900);
-  background: linear-gradient(180deg, #edf4fc 0%, #f8fbff 100%);
-  line-height: 1.55;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(63, 132, 197, 0.22) 0%, transparent 34%),
+    radial-gradient(circle at 90% 15%, rgba(36, 91, 146, 0.18) 0%, transparent 36%),
+    linear-gradient(180deg, #edf4fc 0%, #f8fbff 100%);
+  line-height: 1.6;
 }
 
 a { color: var(--blue-700); }
@@ -30,16 +37,18 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
 .site-header { padding-top: 1.2rem; }
 
 .gradient-border {
-  border: 1px solid rgba(36, 91, 146, 0.2);
-  box-shadow: 0 14px 40px rgba(12, 31, 53, 0.08);
+  border: 1px solid rgba(36, 91, 146, 0.22);
+  box-shadow:
+    0 2px 8px rgba(12, 31, 53, 0.04),
+    0 18px 48px rgba(12, 31, 53, 0.1);
 }
 
 .nav-bar {
   max-width: 1120px;
   margin: 0 auto;
   padding: 0.8rem 1rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.92);
+  border-radius: 1.1rem;
+  background: var(--surface-strong);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -83,13 +92,13 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
   text-decoration: none;
   border: 1px solid transparent;
   padding: 0.58rem 1rem;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 650;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .nav-pill {
-  background: #eef5fd;
+  background: #eef4fc;
   color: var(--blue-900);
 }
 
@@ -175,9 +184,9 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
 .hero-card,
 .card,
 .image-card {
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 1rem;
-  padding: 1.25rem;
+  background: var(--surface-strong);
+  border-radius: 1.1rem;
+  padding: 1.35rem;
 }
 
 .eyebrow {
@@ -190,9 +199,19 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
 }
 
 h1, .hero-title {
+  font-family: "Fraunces", "Times New Roman", serif;
   margin: 0.45rem 0 0.7rem;
-  line-height: 1.2;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
   font-size: clamp(1.65rem, 3vw, 2.6rem);
+}
+
+h2,
+h3,
+h4 {
+  font-family: "Fraunces", "Times New Roman", serif;
+  letter-spacing: -0.01em;
+  margin-top: 0;
 }
 
 .hero-title__line { display: block; }
@@ -208,9 +227,9 @@ main { padding-bottom: 2.5rem; }
 .section {
   max-width: 1120px;
   margin: 1rem auto 0;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.82);
-  padding: 1.2rem;
+  border-radius: 1.1rem;
+  background: var(--surface);
+  padding: 1.3rem;
 }
 
 .section--tight { margin-top: 0.8rem; }
@@ -233,8 +252,8 @@ main { padding-bottom: 2.5rem; }
 .card:hover,
 .image-card:hover,
 .hero-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(20, 54, 91, 0.14);
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px rgba(20, 54, 91, 0.16);
 }
 
 .image-card img {
@@ -251,7 +270,7 @@ main { padding-bottom: 2.5rem; }
   color: var(--slate-700);
 }
 
-.footer-note { color: var(--slate-500); font-size: 0.9rem; }
+.footer-note { color: var(--slate-500); font-size: 0.92rem; }
 
 /* Admin */
 .admin-panel {
