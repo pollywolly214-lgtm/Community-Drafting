@@ -1,12 +1,43 @@
-const buttons = document.querySelectorAll("button");
+const dropdowns = Array.from(document.querySelectorAll(".nav-dropdown"));
 
-const handleClick = (event) => {
-  const label = event.target.textContent.trim();
-  alert(`Thanks for your interest! We'll help you "${label.toLowerCase()}".`);
-};
+dropdowns.forEach((dropdown) => {
+  const button = dropdown.querySelector(".nav-pill--button");
+  if (!button) return;
 
-buttons.forEach((button) => {
-  button.addEventListener("click", handleClick);
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const isOpen = dropdown.classList.contains("is-open");
+    dropdowns.forEach((item) => {
+      item.classList.remove("is-open");
+      const btn = item.querySelector(".nav-pill--button");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+
+    if (!isOpen) {
+      dropdown.classList.add("is-open");
+      button.setAttribute("aria-expanded", "true");
+    }
+  });
+});
+
+document.addEventListener("click", (event) => {
+  dropdowns.forEach((dropdown) => {
+    if (!dropdown.contains(event.target)) {
+      dropdown.classList.remove("is-open");
+      const button = dropdown.querySelector(".nav-pill--button");
+      if (button) button.setAttribute("aria-expanded", "false");
+    }
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    dropdowns.forEach((dropdown) => {
+      dropdown.classList.remove("is-open");
+      const button = dropdown.querySelector(".nav-pill--button");
+      if (button) button.setAttribute("aria-expanded", "false");
+    });
+  }
 });
 
 const ADMIN_PASSWORD = "abc";
