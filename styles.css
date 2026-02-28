@@ -60,7 +60,7 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
   letter-spacing: 0.01em;
 }
 
-.brand img { width: 40px; height: 40px; }
+.brand img { width: 128px; height: 80px; object-fit: contain; }
 
 .nav-links {
   display: inline-flex;
@@ -311,6 +311,7 @@ body.page-3d-printing { background: linear-gradient(180deg, #e6eef9 0%, #f5f9fd 
 body.page-schedule-visit { background: linear-gradient(180deg, #eaf2fb 0%, #f7fbff 100%); }
 
 @media (max-width: 920px) {
+  .brand img { width: 104px; height: 64px; }
   .hero { grid-template-columns: 1fr; }
   .nav-bar { flex-direction: column; align-items: stretch; }
 }
