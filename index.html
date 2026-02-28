@@ -31,6 +31,7 @@
           <a class="nav-pill" href="services.html">Services</a>
           <a class="nav-pill" href="call-designer.html">Call Designer Directly</a>
           <a class="nav-pill" href="services.html#schedule-visit">Schedule a Visit</a>
+          <a class="nav-pill" href="settings.html">Settings</a>
           <a class="nav-pill" href="#contact">Contact</a>
         </div>
         <a class="nav-cta" href="call-designer.html">Call a Designer</a>
@@ -141,6 +142,56 @@
       </section>
 
       <section class="section">
+        <h2 data-admin-key="dashboard-title">Dashboard highlights</h2>
+        <p class="section-subtext" data-admin-key="dashboard-subtext">
+          Keep this section fresh by adding the latest jobs, announcements, and
+          project images from the settings tools.
+        </p>
+        <div class="grid" data-admin-list="updates">
+          <article class="card gradient-border">
+            <h3>New fabrication partner onboarded</h3>
+            <p>
+              Added rush-ready drafting support for custom steel builds in the
+              Hill Country region.
+            </p>
+          </article>
+          <article class="card gradient-border">
+            <h3>Average turnaround now under 48 hours</h3>
+            <p>
+              Most drawing revisions now come back in under two business days,
+              depending on complexity.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <h2 data-admin-key="portfolio-title">Portfolio showcase</h2>
+        <p class="section-subtext" data-admin-key="portfolio-subtext">
+          Add and update images to show your latest dashboard highlights or
+          completed project work.
+        </p>
+        <div class="image-grid" data-admin-gallery="portfolio">
+          <figure class="image-card gradient-border">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Portfolio highlight"
+              data-admin-image="home-portfolio-1"
+            />
+            <figcaption>Large-format shop drawing package.</figcaption>
+          </figure>
+          <figure class="image-card gradient-border">
+            <img
+              src="assets/placeholder-image.svg"
+              alt="Portfolio highlight"
+              data-admin-image="home-portfolio-2"
+            />
+            <figcaption>3D model handoff for production planning.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section">
         <h2>Call designer directly</h2>
         <p class="section-subtext">
           NO sales time wasting straight to the point. Get your questions
@@ -182,9 +233,9 @@
         <div class="admin-card">
           <h4>Editing tips</h4>
           <ul>
-            <li>Click text on the page to edit it directly.</li>
+            <li>All page text is editable while admin mode is active.</li>
             <li>Click images to upload a new photo.</li>
-            <li>Use the form below to add updates.</li>
+            <li>Use Settings page login first (no password for now).</li>
           </ul>
         </div>
         <div class="admin-card">
@@ -205,13 +256,35 @@
             Add update
           </button>
         </div>
+        <div class="admin-card">
+          <h4>Add image to dashboard or portfolio</h4>
+          <label>
+            Image title
+            <input
+              id="admin-image-title"
+              type="text"
+              placeholder="Example: Stair rail concept"
+            />
+          </label>
+          <label>
+            Target section
+            <select id="admin-image-category">
+              <option value="portfolio">Portfolio</option>
+            </select>
+          </label>
+          <label>
+            Choose image
+            <input id="admin-image-input" type="file" accept="image/*" />
+          </label>
+          <button class="primary" id="admin-add-image" type="button">
+            Add image card
+          </button>
+        </div>
       </div>
       <p class="admin-footer">
         Press <strong>Ctrl + `</strong> anytime to toggle admin mode.
       </p>
     </div>
-
-    <input type="file" id="admin-image-input" accept="image/*" hidden />
 
     <script src="script.js"></script>
   </body>

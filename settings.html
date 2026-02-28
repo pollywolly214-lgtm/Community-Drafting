@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings | Community Drafting</title>
+    <meta
+      name="description"
+      content="Settings page for Community Drafting admin editing tools."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="page-settings">
+    <main class="settings-shell">
+      <section class="settings-card gradient-border">
+        <p class="eyebrow">Admin settings</p>
+        <h1>Website editing access</h1>
+        <p>
+          Login is enabled with no password right now. Click login, then open a
+          page in edit mode to update text and images.
+        </p>
+        <form id="settings-login-form" class="settings-form">
+          <button class="primary" type="submit">Login (No Password)</button>
+          <button class="ghost" id="settings-logout" type="button">Logout</button>
+        </form>
+        <p id="settings-status" class="settings-status"></p>
+        <div class="settings-links">
+          <a class="secondary" id="settings-return-link" href="index.html?admin=1"
+            >Open last page in edit mode</a
+          >
+          <a class="secondary" href="index.html?admin=1">Edit homepage</a>
+          <a class="secondary" href="services.html?admin=1">Edit services page</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
