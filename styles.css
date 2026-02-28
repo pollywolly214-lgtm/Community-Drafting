@@ -149,7 +149,7 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
   letter-spacing: 0.01em;
 }
 
-.brand img { width: 40px; height: 40px; }
+.brand img { width: 72px; height: 72px; }
 
 .nav-links {
   display: inline-flex;
