@@ -1,14 +1,3 @@
-const buttons = document.querySelectorAll("button");
-
-const handleClick = (event) => {
-  const label = event.target.textContent.trim();
-  alert(`Thanks for your interest! We'll help you "${label.toLowerCase()}".`);
-};
-
-buttons.forEach((button) => {
-  button.addEventListener("click", handleClick);
-});
-
 const ADMIN_PASSWORD = "abc";
 const STORAGE_KEY = "community-drafting-admin";
 const ADMIN_BODY_CLASS = "admin-active";
