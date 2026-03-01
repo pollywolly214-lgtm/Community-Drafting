@@ -54,6 +54,11 @@
             <a class="primary" href="call-designer.html">Get a quote</a>
             <a class="secondary" href="#portfolio">View portfolio</a>
           </div>
+          <ul class="hero-benefits" aria-label="Community Drafting client benefits">
+            <li>Clear fixed scopes before work begins</li>
+            <li>Direct communication with your assigned designer</li>
+            <li>Build-ready files organized for handoff</li>
+          </ul>
         </div>
         <div class="hero-card gradient-border">
           <h2>How it works</h2>
@@ -84,6 +89,48 @@
         </div>
       </section>
 
+      <section class="section section--compact">
+        <h2>Client feedback</h2>
+        <p class="section-subtext">Recent feedback from teams using Community Drafting for fabrication, install planning, and prototyping.</p>
+        <div class="testimonial-panel gradient-border" id="testimonial-panel">
+          <article class="testimonial is-active" data-testimonial>
+            <p>“Their drawing package reduced install confusion and gave our field crew exactly what they needed.”</p>
+            <h3>Mechanical Contractor · Denver</h3>
+          </article>
+          <article class="testimonial" data-testimonial>
+            <p>“We shared photos and rough notes and got a polished 3D model that was ready for print.”</p>
+            <h3>Product Team · Austin</h3>
+          </article>
+          <article class="testimonial" data-testimonial>
+            <p>“Scope and revisions were clear from the start. We stayed on schedule with fewer surprises.”</p>
+            <h3>Builder · Nashville</h3>
+          </article>
+          <div class="testimonial-actions">
+            <button class="secondary" type="button" id="testimonial-prev">Previous</button>
+            <button class="secondary" type="button" id="testimonial-next">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Project workflow</h2>
+        <p class="section-subtext">A clear sequence helps reduce revisions, avoid delays, and keep your project moving.</p>
+        <ol class="workflow-list" data-admin-list="workflow">
+          <li>
+            <h3>Scope review</h3>
+            <p>Share sketches, photos, and requirements. We confirm deliverables and timeline before any drafting starts.</p>
+          </li>
+          <li>
+            <h3>Draft + feedback loop</h3>
+            <p>Receive your first draft quickly, leave comments directly with the designer, and request refinements.</p>
+          </li>
+          <li>
+            <h3>Final package delivery</h3>
+            <p>Get build-ready files and production notes organized for your installer, shop, or fabrication partner.</p>
+          </li>
+        </ol>
+      </section>
+
       <section class="section alt">
         <h2>Services at a glance</h2>
         <div class="grid">
@@ -110,9 +157,59 @@
         </div>
       </section>
 
+      <section class="section">
+        <h2>Common questions</h2>
+        <div class="faq-list" id="faq-list">
+          <article class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">What files can I send to start a quote?</button>
+            <p class="faq-answer" hidden>Photos, marked-up screenshots, hand sketches, PDFs, and existing CAD exports all work well.</p>
+          </article>
+          <article class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">Can I request revisions after the first draft?</button>
+            <p class="faq-answer" hidden>Yes. The first draft is included, and refinement rounds are scoped with you up front.</p>
+          </article>
+          <article class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">Do you support both 2D and 3D deliverables on one project?</button>
+            <p class="faq-answer" hidden>Absolutely. Many projects combine layout documentation, fabrication details, and printable 3D assets.</p>
+          </article>
+        </div>
+      </section>
+
       <section id="contact" class="section">
         <h2>Contact</h2>
         <p class="section-subtext">Have a project in mind? Share your scope and get an upfront quote with clear deliverables and timeline.</p>
+        <div class="quick-estimator gradient-border" aria-live="polite">
+          <h3>Quick project estimator</h3>
+          <p>Use this as a starting point before requesting your final fixed quote.</p>
+          <form id="estimator-form" class="estimator-form">
+            <label>
+              Service type
+              <select id="estimate-service" name="service">
+                <option value="3d-modeling">3D Modeling</option>
+                <option value="2d-modeling">2D Modeling</option>
+                <option value="3d-printing">3D Printing</option>
+                <option value="site-visit">On-site Visit</option>
+              </select>
+            </label>
+            <label>
+              Project size
+              <select id="estimate-size" name="size">
+                <option value="small">Small (single component)</option>
+                <option value="medium">Medium (room/assembly)</option>
+                <option value="large">Large (multi-zone/system)</option>
+              </select>
+            </label>
+            <label>
+              Urgency
+              <select id="estimate-speed" name="speed">
+                <option value="standard">Standard timeline</option>
+                <option value="expedited">Expedited delivery</option>
+              </select>
+            </label>
+            <button class="secondary" type="submit">Update estimate</button>
+          </form>
+          <p class="estimate-result" id="estimate-result">Estimated starting range: <strong>$420 - $620</strong></p>
+        </div>
         <a class="primary" href="call-designer.html">Request a quote</a>
       </section>
     </main>
