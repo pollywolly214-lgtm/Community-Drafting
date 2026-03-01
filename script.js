@@ -221,3 +221,94 @@ adminImageInput.addEventListener("change", (event) => {
 });
 
 applyAdminState(loadAdminState());
+
+
+const estimatorForm = document.getElementById("estimator-form");
+const estimateResult = document.getElementById("estimate-result");
+
+const serviceBasePrice = {
+  "3d-modeling": 520,
+  "2d-modeling": 420,
+  "3d-printing": 360,
+  "site-visit": 300,
+};
+
+const sizeMultiplier = {
+  small: 1,
+  medium: 1.45,
+  large: 2.1,
+};
+
+const urgencyFee = {
+  standard: 0,
+  expedited: 180,
+};
+
+const updateEstimate = () => {
+  if (!estimatorForm || !estimateResult) return;
+
+  const service = estimatorForm.querySelector("#estimate-service")?.value;
+  const size = estimatorForm.querySelector("#estimate-size")?.value;
+  const speed = estimatorForm.querySelector("#estimate-speed")?.value;
+
+  const base = serviceBasePrice[service] ?? serviceBasePrice["3d-modeling"];
+  const multiplier = sizeMultiplier[size] ?? 1;
+  const rush = urgencyFee[speed] ?? 0;
+
+  const low = Math.round(base * multiplier + rush);
+  const high = Math.round(low * 1.35);
+  estimateResult.innerHTML = `Estimated starting range: <strong>$${low} - $${high}</strong>`;
+};
+
+if (estimatorForm) {
+  estimatorForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    updateEstimate();
+  });
+
+  estimatorForm.addEventListener("change", updateEstimate);
+  updateEstimate();
+}
+
+
+const faqQuestions = Array.from(document.querySelectorAll(".faq-question"));
+
+faqQuestions.forEach((button) => {
+  button.addEventListener("click", () => {
+    const item = button.closest(".faq-item");
+    const answer = item?.querySelector(".faq-answer");
+    const expanded = button.getAttribute("aria-expanded") === "true";
+
+    faqQuestions.forEach((otherButton) => {
+      const otherItem = otherButton.closest(".faq-item");
+      const otherAnswer = otherItem?.querySelector(".faq-answer");
+      otherButton.setAttribute("aria-expanded", "false");
+      if (otherAnswer) otherAnswer.hidden = true;
+    });
+
+    button.setAttribute("aria-expanded", String(!expanded));
+    if (answer) answer.hidden = expanded;
+  });
+});
+
+const testimonials = Array.from(document.querySelectorAll("[data-testimonial]"));
+const prevTestimonialButton = document.getElementById("testimonial-prev");
+const nextTestimonialButton = document.getElementById("testimonial-next");
+let testimonialIndex = 0;
+
+const showTestimonial = (index) => {
+  if (!testimonials.length) return;
+  testimonialIndex = (index + testimonials.length) % testimonials.length;
+  testimonials.forEach((testimonial, idx) => {
+    testimonial.classList.toggle("is-active", idx === testimonialIndex);
+  });
+};
+
+if (prevTestimonialButton && nextTestimonialButton && testimonials.length) {
+  prevTestimonialButton.addEventListener("click", () => showTestimonial(testimonialIndex - 1));
+  nextTestimonialButton.addEventListener("click", () => showTestimonial(testimonialIndex + 1));
+
+  window.setInterval(() => {
+    showTestimonial(testimonialIndex + 1);
+  }, 6500);
+}
