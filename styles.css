@@ -378,6 +378,15 @@ main { padding-bottom: 2.5rem; }
   padding: clamp(1rem, 2.8vw, 2rem);
   background: linear-gradient(148deg, rgba(255, 255, 255, 0.74), rgba(232, 243, 255, 0.5));
   overflow: hidden;
+  display: none;
+}
+
+.cylinder-section.is-enhanced .cylinder-scroll {
+  display: block;
+}
+
+.cylinder-section.is-enhanced .cylinder-fallback {
+  display: none;
 }
 
 .cylinder-stage-wrap {

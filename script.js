@@ -122,15 +122,13 @@ const initCylinder = () => {
   if (!section || !cylinderScroll || !stage || !detail) return;
 
   fillDetail(detail, CYLINDER_ITEMS[0]);
+  section.classList.remove('is-enhanced');
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reducedMotion || !window.THREE || !window.gsap || !window.ScrollTrigger) {
-    cylinderScroll.hidden = true;
-    if (fallback) fallback.hidden = false;
+    console.warn('[cylinder] Falling back to static cards (reduced motion or missing dependencies).');
     return;
   }
-
-  if (fallback) fallback.hidden = true;
 
   const { THREE, gsap, ScrollTrigger } = window;
   gsap.registerPlugin(ScrollTrigger);
@@ -139,11 +137,24 @@ const initCylinder = () => {
   const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 3000);
   camera.position.set(0, 10, 900);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+  } catch (error) {
+    console.warn('[cylinder] WebGL renderer failed; keeping fallback cards visible.', error);
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setClearAlpha(0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   stage.appendChild(renderer.domElement);
+
+  const stageRect = stage.getBoundingClientRect();
+  if (stageRect.width < 40 || stageRect.height < 40) {
+    console.warn('[cylinder] Stage has invalid size; keeping fallback cards visible.');
+    renderer.dispose();
+    return;
+  }
 
   const group = new THREE.Group();
   scene.add(group);
@@ -241,6 +252,9 @@ const initCylinder = () => {
       drawContext.drawImage(image, 80, 94, 864, 564);
       texture.needsUpdate = true;
     };
+    image.onerror = () => {
+      console.warn(`[cylinder] Failed to load panel media: ${item.image}`);
+    };
 
     return texture;
   };
@@ -325,7 +339,7 @@ const initCylinder = () => {
     progress: (CYLINDER_ITEMS.length - 1) / CYLINDER_ITEMS.length,
     ease: 'none',
     scrollTrigger: {
-      trigger: section,
+      trigger: cylinderScroll,
       pin: true,
       scrub: 1,
       start: 'top top',
@@ -349,6 +363,7 @@ const initCylinder = () => {
 
   layoutPanels();
   render();
+  section.classList.add('is-enhanced');
 
   window.addEventListener(
     'beforeunload',
@@ -377,6 +392,9 @@ const waitForCylinderDependencies = () => {
   const loop = () => {
     const ready = Boolean(window.THREE && window.gsap && window.ScrollTrigger);
     if (ready || elapsed >= maxWaitMs) {
+      if (!ready) {
+        console.warn('[cylinder] Timed out waiting for Three.js/GSAP dependencies. Static fallback remains visible.');
+      }
       initCylinder();
       return;
     }
