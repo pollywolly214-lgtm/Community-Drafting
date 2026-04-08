@@ -356,6 +356,79 @@ main { padding-bottom: 2.5rem; }
 }
 
 .section--tight { margin-top: 0.8rem; }
+.cylinder-section {
+  overflow: visible;
+  background:
+    radial-gradient(circle at 24% 8%, rgba(105, 140, 255, 0.2), transparent 38%),
+    radial-gradient(circle at 78% 84%, rgba(86, 196, 255, 0.2), transparent 40%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(233, 244, 255, 0.75));
+}
+
+.cylinder-section__header {
+  max-width: 740px;
+}
+
+.cylinder-scroll {
+  --cylinder-height: clamp(440px, 74vh, 600px);
+  position: relative;
+  min-height: var(--cylinder-height);
+  margin-top: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(138, 174, 211, 0.36);
+  padding: clamp(1rem, 2.8vw, 2rem);
+  background: linear-gradient(148deg, rgba(255, 255, 255, 0.74), rgba(232, 243, 255, 0.5));
+  overflow: hidden;
+}
+
+.cylinder-stage-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.cylinder-stage {
+  width: min(100%, 960px);
+  height: 100%;
+  perspective: 1400px;
+}
+
+.cylinder-detail-card {
+  position: relative;
+  z-index: 3;
+  width: min(420px, 100%);
+  margin-top: auto;
+  margin-left: auto;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(235, 246, 255, 0.82));
+}
+
+.cylinder-detail-card__label {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--blue-700);
+}
+
+.cylinder-detail-card__title {
+  margin: 0.4rem 0 0.5rem;
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+}
+
+.cylinder-detail-card__description {
+  margin: 0;
+  color: var(--slate-700);
+}
+
+.cylinder-detail-card__cta {
+  margin-top: 0.9rem;
+}
+
+.cylinder-fallback {
+  margin-top: 1rem;
+}
 
 .section.alt {
   background:
@@ -512,5 +585,28 @@ body.page-schedule-visit {
   }
   main::before {
     opacity: 0.18;
+  }
+  .cylinder-scroll {
+    --cylinder-height: min(600px, 78vh);
+  }
+  .cylinder-detail-card {
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .cylinder-scroll {
+    --cylinder-height: 540px;
+    padding: 0.9rem;
+  }
+  .cylinder-stage {
+    width: 100%;
+  }
+  .cylinder-detail-card {
+    width: 100%;
+    border-radius: 0.8rem;
+  }
+  .cylinder-detail-card__title {
+    font-size: 1.3rem;
   }
 }

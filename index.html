@@ -65,22 +65,44 @@
     </header>
 
     <main>
-      <section id="portfolio" class="section section--tight">
-        <h2>Portfolio highlights</h2>
-        <p class="section-subtext">A quick look at recent work right at the top so you can see our quality immediately.</p>
-        <div class="image-grid">
-          <figure class="image-card gradient-border">
-            <img src="assets/placeholder-image.svg" alt="Portfolio highlight" data-admin-image="portfolio-1" />
-            <figcaption>Custom 3D model for fabrication planning.</figcaption>
-          </figure>
-          <figure class="image-card gradient-border">
-            <img src="assets/placeholder-image.svg" alt="Portfolio highlight" data-admin-image="portfolio-2" />
-            <figcaption>2D layout package ready for field use.</figcaption>
-          </figure>
-          <figure class="image-card gradient-border">
-            <img src="assets/placeholder-image.svg" alt="Portfolio highlight" data-admin-image="portfolio-3" />
-            <figcaption>3D printed concept part for fit testing.</figcaption>
-          </figure>
+      <section id="portfolio" class="section section--tight cylinder-section">
+        <div class="cylinder-section__header">
+          <p class="eyebrow">INTERACTIVE SHOWCASE</p>
+          <h2>Scroll through our process in 3D</h2>
+          <p class="section-subtext">As you scroll, the pinned cylinder rotates to bring each service to the front with depth-focused emphasis and clear calls to action.</p>
+        </div>
+        <div class="cylinder-scroll" data-cylinder-scroll>
+          <div class="cylinder-stage-wrap">
+            <div class="cylinder-stage" data-cylinder-stage role="img" aria-label="A rotating 3D cylinder with project and service panels."></div>
+          </div>
+          <article class="cylinder-detail-card gradient-border" data-cylinder-detail aria-live="polite">
+            <p class="cylinder-detail-card__label">Featured service</p>
+            <h3 class="cylinder-detail-card__title">3D Modeling</h3>
+            <p class="cylinder-detail-card__description">Production-ready models and shop drawings tailored for fabrication planning and quick approvals.</p>
+            <a class="primary cylinder-detail-card__cta" href="service-3d-modeling.html">Explore service</a>
+          </article>
+        </div>
+        <div class="cylinder-fallback grid" data-cylinder-fallback hidden>
+          <article class="card gradient-border">
+            <h3>3D Modeling</h3>
+            <p>Production-ready models and shop drawings tailored for fabrication planning and quick approvals.</p>
+            <a class="text-link" href="service-3d-modeling.html">Explore service</a>
+          </article>
+          <article class="card gradient-border">
+            <h3>2D Modeling</h3>
+            <p>Field-ready layouts with dimensions, notes, and documentation your install crews can trust.</p>
+            <a class="text-link" href="service-2d-modeling.html">Explore service</a>
+          </article>
+          <article class="card gradient-border">
+            <h3>3D Printing</h3>
+            <p>Functional and presentation prototypes for fit testing, design validation, and client reviews.</p>
+            <a class="text-link" href="service-3d-printing.html">Explore service</a>
+          </article>
+          <article class="card gradient-border">
+            <h3>On-site Visit</h3>
+            <p>In-person measurements and scope alignment to keep your project moving without guesswork.</p>
+            <a class="text-link" href="schedule-visit.html">Schedule a visit</a>
+          </article>
         </div>
       </section>
 
@@ -173,6 +195,9 @@
 
     <input type="file" id="admin-image-input" accept="image/*" hidden />
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r164/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
     <script src="script.js"></script>
   </body>
 </html>
