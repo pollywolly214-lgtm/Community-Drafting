@@ -186,12 +186,7 @@ const initCylinderSection = () => {
     };
   };
 
-  const loadTexture = new THREE.TextureLoader();
-
   items.forEach((item, index) => {
-    const texture = loadTexture.load(item.image);
-    texture.colorSpace = THREE.SRGBColorSpace;
-
     const cardCanvas = document.createElement('canvas');
     cardCanvas.width = 1024;
     cardCanvas.height = 1280;
@@ -206,7 +201,8 @@ const initCylinderSection = () => {
       ctx.fillStyle = item.theme || '#6f7cff';
       ctx.fillRect(0, 0, cardCanvas.width, 46);
 
-      ctx.drawImage(texture.image, 84, 100, 856, 560);
+      ctx.fillStyle = 'rgba(210, 226, 242, 0.8)';
+      ctx.fillRect(84, 100, 856, 560);
 
       ctx.fillStyle = '#25507f';
       ctx.font = '600 46px Plus Jakarta Sans, Arial';
@@ -236,6 +232,18 @@ const initCylinderSection = () => {
 
     const panelTexture = new THREE.CanvasTexture(cardCanvas);
     panelTexture.colorSpace = THREE.SRGBColorSpace;
+    const image = new Image();
+    image.decoding = 'async';
+    image.loading = 'lazy';
+    image.src = item.image;
+    image.onload = () => {
+      const context = cardCanvas.getContext('2d');
+      if (!context || image.naturalWidth <= 0) return;
+      context.fillStyle = 'rgba(210, 226, 242, 0.8)';
+      context.fillRect(84, 100, 856, 560);
+      context.drawImage(image, 84, 100, 856, 560);
+      panelTexture.needsUpdate = true;
+    };
 
     const material = new THREE.MeshPhysicalMaterial({
       map: panelTexture,
@@ -374,6 +382,32 @@ const initCylinderSection = () => {
   };
 
   window.addEventListener('beforeunload', destroy, { once: true });
+};
+
+const initCylinderSectionWhenReady = () => {
+  const section = document.querySelector('[data-cylinder-scroll]');
+  if (!section) return;
+
+  const fallback = document.querySelector('[data-cylinder-fallback]');
+  let attempts = 0;
+  const maxAttempts = 60;
+
+  const tick = () => {
+    attempts += 1;
+    const depsReady = Boolean(window.THREE && window.gsap && window.ScrollTrigger);
+    if (depsReady) {
+      initCylinderSection();
+      return;
+    }
+    if (attempts >= maxAttempts) {
+      section.hidden = true;
+      if (fallback) fallback.hidden = false;
+      return;
+    }
+    window.setTimeout(tick, 100);
+  };
+
+  tick();
 };
 
 const ADMIN_PASSWORD = 'abc';
@@ -540,4 +574,4 @@ if (adminImageInput) {
 }
 
 applyAdminState(loadAdminState());
-initCylinderSection();
+initCylinderSectionWhenReady();
