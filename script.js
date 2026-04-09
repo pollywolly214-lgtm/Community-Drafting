@@ -1,41 +1,8 @@
-const dropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
-
-dropdowns.forEach((dropdown) => {
-  const button = dropdown.querySelector('.nav-pill--button');
-  if (!button) return;
-
-  button.addEventListener('click', (event) => {
-    event.stopPropagation();
-    const isOpen = dropdown.classList.contains('is-open');
-
-    dropdowns.forEach((item) => {
-      item.classList.remove('is-open');
-      const btn = item.querySelector('.nav-pill--button');
-      if (btn) btn.setAttribute('aria-expanded', 'false');
-    });
-
-    if (!isOpen) {
-      dropdown.classList.add('is-open');
-      button.setAttribute('aria-expanded', 'true');
-    }
-  });
-});
-
-document.addEventListener('click', (event) => {
-  dropdowns.forEach((dropdown) => {
-    if (!dropdown.contains(event.target)) {
-      dropdown.classList.remove('is-open');
-      const button = dropdown.querySelector('.nav-pill--button');
-      if (button) button.setAttribute('aria-expanded', 'false');
-    }
-  });
-});
-
 const CYLINDER_ITEMS = [
   {
     title: '3D Modeling',
     subtitle: 'Fabrication Ready',
-    description: 'Production-grade models and shop-ready outputs prepared for real fabrication workflows.',
+    description: 'Production-grade models and shop-ready outputs for real fabrication workflows.',
     image: 'assets/placeholder-image.svg',
     ctaLabel: 'Explore service',
     ctaHref: 'service-3d-modeling.html',
@@ -44,7 +11,7 @@ const CYLINDER_ITEMS = [
   {
     title: '2D Modeling',
     subtitle: 'Field Documentation',
-    description: 'Clear 2D layouts and detailed notes for permit packets, install teams, and scope alignment.',
+    description: 'Clear 2D layouts and permit-ready documentation for install teams and stakeholders.',
     image: 'assets/placeholder-image.svg',
     ctaLabel: 'View details',
     ctaHref: 'service-2d-modeling.html',
@@ -53,55 +20,50 @@ const CYLINDER_ITEMS = [
   {
     title: '3D Printing',
     subtitle: 'Rapid Prototype',
-    description: 'Functional prototypes and presentation models for fit checks and high-confidence reviews.',
+    description: 'Functional prototypes and presentation models for validation and fit checks.',
     image: 'assets/placeholder-image.svg',
     ctaLabel: 'See prints',
     ctaHref: 'service-3d-printing.html',
     theme: '#5fd5ff',
   },
   {
-    title: 'On-Site Visit',
+    title: 'On-site Visit',
     subtitle: 'Measured Scope',
-    description: 'In-person measurements and project clarification to prevent rework and keep delivery clean.',
+    description: 'In-person measurement and scope alignment to prevent rework and reduce risk.',
     image: 'assets/placeholder-image.svg',
     ctaLabel: 'Schedule visit',
     ctaHref: 'schedule-visit.html',
     theme: '#95a6ff',
   },
-  {
-    title: 'Direct Designer Call',
-    subtitle: 'Fast Quotes',
-    description: 'Speak directly with a designer and receive a fixed-price path tailored to your project goals.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Call now',
-    ctaHref: 'call-designer.html',
-    theme: '#72b3ff',
-  },
 ];
 
 const CYLINDER_CONFIG = {
-  radiusDesktop: 350,
-  radiusTablet: 285,
-  radiusMobile: 220,
-  panelWidthDesktop: 280,
+  radiusDesktop: 340,
+  radiusTablet: 275,
+  radiusMobile: 210,
+  panelWidthDesktop: 275,
   panelWidthTablet: 230,
-  panelWidthMobile: 190,
-  panelHeightDesktop: 360,
-  panelHeightTablet: 315,
-  panelHeightMobile: 270,
-  scrollDistanceVh: 360,
-  frontLiftScale: 1.05,
-  sideScale: 0.8,
-  backOpacity: 0.13,
+  panelWidthMobile: 185,
+  panelHeightDesktop: 350,
+  panelHeightTablet: 310,
+  panelHeightMobile: 265,
+  scrollDistanceVh: 340,
+  cameraZ: 890,
+  cameraY: 12,
   frontOpacity: 1,
+  backOpacity: 0.15,
+  frontScale: 1.05,
+  sideScale: 0.82,
 };
 
-const fillDetail = (container, item) => {
-  if (!container || !item) return;
-  const label = container.querySelector('.cylinder-detail-card__label');
-  const title = container.querySelector('.cylinder-detail-card__title');
-  const description = container.querySelector('.cylinder-detail-card__description');
-  const cta = container.querySelector('.cylinder-detail-card__cta');
+const select = (selector) => document.querySelector(selector);
+
+const setDetail = (detailCard, item) => {
+  if (!detailCard || !item) return;
+  const label = detailCard.querySelector('.detail-card__label');
+  const title = detailCard.querySelector('.detail-card__title');
+  const description = detailCard.querySelector('.detail-card__description');
+  const cta = detailCard.querySelector('.detail-card__cta');
 
   if (label) label.textContent = item.subtitle;
   if (title) title.textContent = item.title;
@@ -113,73 +75,74 @@ const fillDetail = (container, item) => {
 };
 
 const initCylinder = () => {
-  const section = document.querySelector('.cylinder-section');
-  const cylinderScroll = document.querySelector('[data-cylinder-scroll]');
-  const stage = document.querySelector('[data-cylinder-stage]');
-  const detail = document.querySelector('[data-cylinder-detail]');
-  const fallback = document.querySelector('[data-cylinder-fallback]');
+  const section = select('.cylinder-section');
+  const enhanced = select('[data-cylinder-enhanced]');
+  const stage = select('[data-cylinder-stage]');
+  const detail = select('[data-cylinder-detail]');
 
-  if (!section || !cylinderScroll || !stage || !detail) return;
+  if (!section || !enhanced || !stage || !detail) return;
 
-  fillDetail(detail, CYLINDER_ITEMS[0]);
+  setDetail(detail, CYLINDER_ITEMS[0]);
   section.classList.remove('is-enhanced');
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reducedMotion || !window.THREE || !window.gsap || !window.ScrollTrigger) {
-    console.warn('[cylinder] Falling back to static cards (reduced motion or missing dependencies).');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    console.warn('[cylinder] Reduced motion is enabled. Using visible static fallback.');
+    return;
+  }
+
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger) {
+    console.warn('[cylinder] Missing Three.js/GSAP dependencies. Using visible static fallback.');
+    return;
+  }
+
+  const stageRect = stage.getBoundingClientRect();
+  if (stageRect.width < 60 || stageRect.height < 60) {
+    console.warn('[cylinder] Stage has zero/invalid size. Using visible static fallback.');
     return;
   }
 
   const { THREE, gsap, ScrollTrigger } = window;
   gsap.registerPlugin(ScrollTrigger);
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 3000);
-  camera.position.set(0, 10, 900);
-
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
   } catch (error) {
-    console.warn('[cylinder] WebGL renderer failed; keeping fallback cards visible.', error);
+    console.warn('[cylinder] WebGL init failed. Using visible static fallback.', error);
     return;
   }
+
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearAlpha(0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.setClearAlpha(0);
   stage.appendChild(renderer.domElement);
 
-  const stageRect = stage.getBoundingClientRect();
-  if (stageRect.width < 40 || stageRect.height < 40) {
-    console.warn('[cylinder] Stage has invalid size; keeping fallback cards visible.');
-    renderer.dispose();
-    return;
-  }
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 3000);
+  camera.position.set(0, CYLINDER_CONFIG.cameraY, CYLINDER_CONFIG.cameraZ);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.86));
+  const keyLight = new THREE.DirectionalLight(0xdbe9ff, 1.16);
+  keyLight.position.set(130, 170, 280);
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0x9cb2ff, 0.72);
+  rimLight.position.set(-220, 45, -220);
+  scene.add(rimLight);
 
   const group = new THREE.Group();
   scene.add(group);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-  const keyLight = new THREE.DirectionalLight(0xd9ebff, 1.15);
-  keyLight.position.set(120, 170, 260);
-  scene.add(keyLight);
-  const rim = new THREE.DirectionalLight(0x9caeff, 0.72);
-  rim.position.set(-200, 40, -200);
-  scene.add(rim);
-
-  const panels = [];
-  const angleStep = (Math.PI * 2) / CYLINDER_ITEMS.length;
-
-  const getDimensions = () => {
+  const getSizeConfig = () => {
     const w = window.innerWidth;
-    if (w < 680) {
+    if (w < 700) {
       return {
         radius: CYLINDER_CONFIG.radiusMobile,
         panelWidth: CYLINDER_CONFIG.panelWidthMobile,
         panelHeight: CYLINDER_CONFIG.panelHeightMobile,
       };
     }
-    if (w < 1024) {
+    if (w < 1040) {
       return {
         radius: CYLINDER_CONFIG.radiusTablet,
         panelWidth: CYLINDER_CONFIG.panelWidthTablet,
@@ -193,46 +156,46 @@ const initCylinder = () => {
     };
   };
 
-  const createCardTexture = (item) => {
+  const createTexture = (item) => {
     const canvas = document.createElement('canvas');
     canvas.width = 1024;
     canvas.height = 1280;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, 'rgba(255,255,255,0.97)');
-      gradient.addColorStop(1, 'rgba(228,242,255,0.93)');
-      ctx.fillStyle = gradient;
+      const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      bg.addColorStop(0, 'rgba(255,255,255,0.98)');
+      bg.addColorStop(1, 'rgba(227,240,255,0.92)');
+      ctx.fillStyle = bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.fillStyle = item.theme;
       ctx.fillRect(0, 0, canvas.width, 52);
 
-      ctx.fillStyle = 'rgba(203,224,245,0.85)';
-      ctx.fillRect(80, 94, 864, 564);
+      ctx.fillStyle = 'rgba(199,223,248,0.85)';
+      ctx.fillRect(80, 96, 864, 560);
 
-      ctx.fillStyle = '#265686';
-      ctx.font = '600 46px Plus Jakarta Sans, Arial';
+      ctx.fillStyle = '#2a5f95';
+      ctx.font = '600 44px Plus Jakarta Sans, Arial';
       ctx.fillText(item.subtitle, 80, 760);
 
-      ctx.fillStyle = '#10263f';
-      ctx.font = '700 72px Fraunces, Georgia';
-      ctx.fillText(item.title, 80, 860);
+      ctx.fillStyle = '#102640';
+      ctx.font = '700 74px Fraunces, Georgia';
+      ctx.fillText(item.title, 80, 858);
 
-      ctx.fillStyle = '#2f445c';
+      ctx.fillStyle = '#2f445a';
       ctx.font = '500 40px Plus Jakarta Sans, Arial';
       const words = item.description.split(' ');
       let line = '';
-      let y = 948;
+      let y = 940;
       words.forEach((word) => {
-        const next = `${line}${word} `;
-        if (ctx.measureText(next).width > 840) {
+        const candidate = `${line}${word} `;
+        if (ctx.measureText(candidate).width > 840) {
           ctx.fillText(line, 80, y);
           line = `${word} `;
-          y += 52;
+          y += 50;
         } else {
-          line = next;
+          line = candidate;
         }
       });
       if (line) ctx.fillText(line, 80, y);
@@ -245,46 +208,46 @@ const initCylinder = () => {
     image.decoding = 'async';
     image.src = item.image;
     image.onload = () => {
-      const drawContext = canvas.getContext('2d');
-      if (!drawContext) return;
-      drawContext.fillStyle = 'rgba(203,224,245,0.85)';
-      drawContext.fillRect(80, 94, 864, 564);
-      drawContext.drawImage(image, 80, 94, 864, 564);
+      const drawCtx = canvas.getContext('2d');
+      if (!drawCtx) return;
+      drawCtx.fillStyle = 'rgba(199,223,248,0.85)';
+      drawCtx.fillRect(80, 96, 864, 560);
+      drawCtx.drawImage(image, 80, 96, 864, 560);
       texture.needsUpdate = true;
     };
     image.onerror = () => {
-      console.warn(`[cylinder] Failed to load panel media: ${item.image}`);
+      console.warn(`[cylinder] Media failed to load: ${item.image}`);
     };
 
     return texture;
   };
 
-  CYLINDER_ITEMS.forEach((item, index) => {
-    const texture = createCardTexture(item);
+  const angleStep = (Math.PI * 2) / CYLINDER_ITEMS.length;
+  const panels = CYLINDER_ITEMS.map((item, index) => {
+    const texture = createTexture(item);
     const material = new THREE.MeshPhysicalMaterial({
       map: texture,
-      roughness: 0.26,
-      metalness: 0.04,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.3,
+      roughness: 0.25,
+      metalness: 0.05,
+      clearcoat: 0.58,
+      clearcoatRoughness: 0.31,
       transparent: true,
       opacity: CYLINDER_CONFIG.frontOpacity,
       side: THREE.DoubleSide,
     });
-
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
-    mesh.userData.index = index;
     group.add(mesh);
-
-    panels.push({ mesh, material, texture, baseAngle: index * angleStep, item });
+    return { item, texture, material, mesh, baseAngle: index * angleStep };
   });
 
-  const layoutPanels = () => {
+  const resize = () => {
     const rect = stage.getBoundingClientRect();
-    const { radius, panelWidth, panelHeight } = getDimensions();
+    const width = Math.max(rect.width, 300);
+    const height = Math.max(rect.height, 320);
+    const { radius, panelWidth, panelHeight } = getSizeConfig();
 
-    renderer.setSize(Math.max(rect.width, 280), Math.max(rect.height, 320), false);
-    camera.aspect = Math.max(rect.width, 280) / Math.max(rect.height, 320);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
 
     panels.forEach((panel) => {
@@ -297,112 +260,99 @@ const initCylinder = () => {
     });
   };
 
-  let activePanel = 0;
-  const tmpVector = new THREE.Vector3();
-
-  const updateEmphasis = () => {
-    let strongest = -1;
-    let strongestIndex = 0;
-
-    panels.forEach((panel, idx) => {
-      panel.mesh.getWorldPosition(tmpVector);
-      const frontness = THREE.MathUtils.clamp((tmpVector.z + 540) / 1040, 0, 1);
-
-      const opacity = THREE.MathUtils.lerp(CYLINDER_CONFIG.backOpacity, CYLINDER_CONFIG.frontOpacity, frontness);
-      const scale = THREE.MathUtils.lerp(CYLINDER_CONFIG.sideScale, CYLINDER_CONFIG.frontLiftScale, frontness);
-
-      panel.material.opacity = opacity;
-      panel.mesh.scale.setScalar(scale);
-
-      if (frontness > strongest) {
-        strongest = frontness;
-        strongestIndex = idx;
-      }
-    });
-
-    if (strongestIndex !== activePanel) {
-      activePanel = strongestIndex;
-      fillDetail(detail, panels[strongestIndex].item);
-      gsap.fromTo(detail, { y: 12, opacity: 0.75 }, { y: 0, opacity: 1, duration: 0.28, overwrite: true });
-    }
-  };
-
+  const vector = new THREE.Vector3();
+  let active = 0;
   const state = { progress: 0 };
 
   const render = () => {
     group.rotation.y = -state.progress * Math.PI * 2;
-    updateEmphasis();
+
+    let strongest = -1;
+    let strongestIndex = 0;
+
+    panels.forEach((panel, index) => {
+      panel.mesh.getWorldPosition(vector);
+      const frontness = THREE.MathUtils.clamp((vector.z + 540) / 1020, 0, 1);
+      panel.material.opacity = THREE.MathUtils.lerp(CYLINDER_CONFIG.backOpacity, CYLINDER_CONFIG.frontOpacity, frontness);
+      panel.mesh.scale.setScalar(THREE.MathUtils.lerp(CYLINDER_CONFIG.sideScale, CYLINDER_CONFIG.frontScale, frontness));
+
+      if (frontness > strongest) {
+        strongest = frontness;
+        strongestIndex = index;
+      }
+    });
+
+    if (strongestIndex !== active) {
+      active = strongestIndex;
+      setDetail(detail, panels[strongestIndex].item);
+      gsap.fromTo(detail, { y: 12, opacity: 0.76 }, { y: 0, opacity: 1, duration: 0.24, overwrite: true });
+    }
+
     renderer.render(scene, camera);
   };
 
-  const spinTween = gsap.to(state, {
+  const spin = gsap.to(state, {
     progress: (CYLINDER_ITEMS.length - 1) / CYLINDER_ITEMS.length,
     ease: 'none',
     scrollTrigger: {
-      trigger: cylinderScroll,
-      pin: true,
-      scrub: 1,
+      trigger: enhanced,
       start: 'top top',
       end: `+=${window.innerHeight * (CYLINDER_CONFIG.scrollDistanceVh / 100)}`,
-      anticipatePin: 1,
+      pin: true,
+      scrub: 1,
       invalidateOnRefresh: true,
+      anticipatePin: 1,
       onUpdate: render,
       onRefresh: () => {
-        layoutPanels();
+        resize();
         render();
       },
     },
   });
 
   const onResize = () => {
-    layoutPanels();
+    resize();
     render();
   };
 
   window.addEventListener('resize', onResize);
 
-  layoutPanels();
+  resize();
   render();
   section.classList.add('is-enhanced');
 
-  window.addEventListener(
-    'beforeunload',
-    () => {
-      window.removeEventListener('resize', onResize);
-      spinTween.kill();
-      panels.forEach((panel) => {
-        panel.mesh.geometry.dispose();
-        panel.material.dispose();
-        panel.texture.dispose();
-      });
-      renderer.dispose();
-      if (renderer.domElement.parentNode) {
-        renderer.domElement.parentNode.removeChild(renderer.domElement);
-      }
-    },
-    { once: true },
-  );
+  window.addEventListener('beforeunload', () => {
+    window.removeEventListener('resize', onResize);
+    spin.kill();
+    panels.forEach((panel) => {
+      panel.mesh.geometry.dispose();
+      panel.material.dispose();
+      panel.texture.dispose();
+    });
+    renderer.dispose();
+  }, { once: true });
 };
 
-const waitForCylinderDependencies = () => {
-  const maxWaitMs = 7000;
+const waitForLibrariesThenInit = () => {
+  const timeoutMs = 7000;
   const stepMs = 100;
   let elapsed = 0;
 
-  const loop = () => {
+  const poll = () => {
     const ready = Boolean(window.THREE && window.gsap && window.ScrollTrigger);
-    if (ready || elapsed >= maxWaitMs) {
+    if (ready || elapsed >= timeoutMs) {
       if (!ready) {
-        console.warn('[cylinder] Timed out waiting for Three.js/GSAP dependencies. Static fallback remains visible.');
+        console.warn('[cylinder] Library timeout. Keeping static fallback visible.');
       }
       initCylinder();
       return;
     }
+
     elapsed += stepMs;
-    window.setTimeout(loop, stepMs);
+    window.setTimeout(poll, stepMs);
   };
 
-  loop();
+  poll();
 };
 
-document.addEventListener('DOMContentLoaded', waitForCylinderDependencies);
+document.addEventListener('DOMContentLoaded', waitForLibrariesThenInit);
