@@ -1,12 +1,12 @@
 :root {
-  --bg-a: #e6efff;
-  --bg-b: #f7fbff;
-  --ink-900: #122538;
-  --ink-700: #2f445a;
-  --brand-700: #285f98;
-  --brand-500: #3e86c9;
-  --line: rgba(113, 154, 197, 0.32);
-  --card: linear-gradient(165deg, rgba(255, 255, 255, 0.96), rgba(232, 243, 255, 0.88));
+  --bg-a: #060b14;
+  --bg-b: #0b1220;
+  --ink-900: #e8edf8;
+  --ink-700: #b8c3d9;
+  --brand-700: #8dc0ff;
+  --brand-500: #4d8fe0;
+  --line: rgba(121, 157, 201, 0.24);
+  --card: linear-gradient(165deg, rgba(16, 24, 38, 0.9), rgba(12, 19, 31, 0.88));
 }
 
 * { box-sizing: border-box; }
@@ -16,8 +16,8 @@ body {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   color: var(--ink-900);
   background:
-    radial-gradient(circle at 10% 8%, rgba(120, 131, 255, 0.18), transparent 35%),
-    radial-gradient(circle at 86% 16%, rgba(91, 190, 255, 0.2), transparent 38%),
+    radial-gradient(circle at 12% 10%, rgba(104, 130, 255, 0.18), transparent 35%),
+    radial-gradient(circle at 88% 14%, rgba(79, 175, 255, 0.2), transparent 40%),
     linear-gradient(180deg, var(--bg-a), var(--bg-b));
   line-height: 1.6;
 }
@@ -32,7 +32,7 @@ main {
   border: 1px solid var(--line);
   border-radius: 1rem;
   background: var(--card);
-  box-shadow: 0 18px 42px rgba(18, 37, 56, 0.1);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
   padding: clamp(1rem, 2.4vw, 2rem);
   margin-top: 1rem;
 }
@@ -118,7 +118,7 @@ h3 { font-size: clamp(1.2rem, 2vw, 1.55rem); }
   padding: clamp(0.9rem, 2.3vw, 1.7rem);
   position: relative;
   overflow: hidden;
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.78), rgba(225, 240, 255, 0.52));
+  background: radial-gradient(circle at 50% 0%, rgba(53, 84, 126, 0.32), rgba(6, 10, 16, 0.82) 55%);
 }
 
 .cylinder-section.is-enhanced .cylinder-enhanced { display: block; }
@@ -146,7 +146,7 @@ h3 { font-size: clamp(1.2rem, 2vw, 1.55rem); }
   border: 1px solid var(--line);
   border-radius: 0.8rem;
   padding: 1rem;
-  background: linear-gradient(168deg, rgba(255, 255, 255, 0.96), rgba(231, 243, 255, 0.88));
+  background: linear-gradient(168deg, rgba(18, 30, 48, 0.95), rgba(16, 25, 39, 0.88));
 }
 
 .detail-card__label {

@@ -35,6 +35,42 @@ const CYLINDER_ITEMS = [
     ctaHref: 'schedule-visit.html',
     theme: '#95a6ff',
   },
+  {
+    title: 'Permit Set',
+    subtitle: 'Approval Ready',
+    description: 'Code-oriented drawing packs prepared for review and permit submissions.',
+    image: 'assets/placeholder-image.svg',
+    ctaLabel: 'Request set',
+    ctaHref: 'call-designer.html',
+    theme: '#7ec3ff',
+  },
+  {
+    title: 'Concept Draft',
+    subtitle: 'Early Direction',
+    description: 'Fast concept drafting to lock scope before committing to fabrication details.',
+    image: 'assets/placeholder-image.svg',
+    ctaLabel: 'Start concept',
+    ctaHref: 'call-designer.html',
+    theme: '#73d4ff',
+  },
+  {
+    title: 'Revision Sprint',
+    subtitle: 'Rapid Iteration',
+    description: 'Focused revision rounds to move from feedback to final outputs quickly.',
+    image: 'assets/placeholder-image.svg',
+    ctaLabel: 'Plan revision',
+    ctaHref: 'call-designer.html',
+    theme: '#9c9bff',
+  },
+  {
+    title: 'Designer Support',
+    subtitle: 'Direct Access',
+    description: 'Work directly with a designer throughout the project for consistent decisions.',
+    image: 'assets/placeholder-image.svg',
+    ctaLabel: 'Contact now',
+    ctaHref: 'call-designer.html',
+    theme: '#62b0ff',
+  },
 ];
 
 const CYLINDER_CONFIG = {
@@ -96,12 +132,6 @@ const initCylinder = () => {
     return;
   }
 
-  const stageRect = stage.getBoundingClientRect();
-  if (stageRect.width < 60 || stageRect.height < 60) {
-    console.warn('[cylinder] Stage has zero/invalid size. Using visible static fallback.');
-    return;
-  }
-
   const { THREE, gsap, ScrollTrigger } = window;
   gsap.registerPlugin(ScrollTrigger);
 
@@ -117,6 +147,18 @@ const initCylinder = () => {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setClearAlpha(0);
   stage.appendChild(renderer.domElement);
+
+  section.classList.add('is-enhanced');
+  const stageRect = stage.getBoundingClientRect();
+  if (stageRect.width < 60 || stageRect.height < 60) {
+    console.warn('[cylinder] Stage has zero/invalid size. Reverting to static fallback.');
+    section.classList.remove('is-enhanced');
+    renderer.dispose();
+    if (renderer.domElement.parentNode) {
+      renderer.domElement.parentNode.removeChild(renderer.domElement);
+    }
+    return;
+  }
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 3000);
@@ -319,7 +361,6 @@ const initCylinder = () => {
 
   resize();
   render();
-  section.classList.add('is-enhanced');
 
   window.addEventListener('beforeunload', () => {
     window.removeEventListener('resize', onResize);
