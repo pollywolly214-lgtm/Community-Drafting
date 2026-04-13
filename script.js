@@ -1,397 +1,178 @@
-const CYLINDER_ITEMS = [
-  {
-    title: '3D Modeling',
-    subtitle: 'Fabrication Ready',
-    description: 'Production-grade models and shop-ready outputs for real fabrication workflows.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Explore service',
-    ctaHref: 'service-3d-modeling.html',
-    theme: '#63b8ff',
-  },
-  {
-    title: '2D Modeling',
-    subtitle: 'Field Documentation',
-    description: 'Clear 2D layouts and permit-ready documentation for install teams and stakeholders.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'View details',
-    ctaHref: 'service-2d-modeling.html',
-    theme: '#8a8dff',
-  },
-  {
-    title: '3D Printing',
-    subtitle: 'Rapid Prototype',
-    description: 'Functional prototypes and presentation models for validation and fit checks.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'See prints',
-    ctaHref: 'service-3d-printing.html',
-    theme: '#5fd5ff',
-  },
-  {
-    title: 'On-site Visit',
-    subtitle: 'Measured Scope',
-    description: 'In-person measurement and scope alignment to prevent rework and reduce risk.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Schedule visit',
-    ctaHref: 'schedule-visit.html',
-    theme: '#95a6ff',
-  },
-  {
-    title: 'Permit Set',
-    subtitle: 'Approval Ready',
-    description: 'Code-oriented drawing packs prepared for review and permit submissions.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Request set',
-    ctaHref: 'call-designer.html',
-    theme: '#7ec3ff',
-  },
-  {
-    title: 'Concept Draft',
-    subtitle: 'Early Direction',
-    description: 'Fast concept drafting to lock scope before committing to fabrication details.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Start concept',
-    ctaHref: 'call-designer.html',
-    theme: '#73d4ff',
-  },
-  {
-    title: 'Revision Sprint',
-    subtitle: 'Rapid Iteration',
-    description: 'Focused revision rounds to move from feedback to final outputs quickly.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Plan revision',
-    ctaHref: 'call-designer.html',
-    theme: '#9c9bff',
-  },
-  {
-    title: 'Designer Support',
-    subtitle: 'Direct Access',
-    description: 'Work directly with a designer throughout the project for consistent decisions.',
-    image: 'assets/placeholder-image.svg',
-    ctaLabel: 'Contact now',
-    ctaHref: 'call-designer.html',
-    theme: '#62b0ff',
-  },
+const PANEL_CONTENT = [
+  { title: 'Modeling', color: '#7fd3ff' },
+  { title: 'Layouts', color: '#8ea0ff' },
+  { title: 'Printing', color: '#6dd8ff' },
+  { title: 'Site Visit', color: '#9db2ff' },
+  { title: 'Permits', color: '#79beff' },
+  { title: 'Revisions', color: '#75d4ff' },
+  { title: 'Support', color: '#95a3ff' },
+  { title: 'Delivery', color: '#68b2ff' },
 ];
 
-const CYLINDER_CONFIG = {
-  rings: 2,
-  ringYOffset: 200,
-  radiusDesktop: 370,
-  radiusTablet: 300,
-  radiusMobile: 235,
-  panelWidthDesktop: 252,
-  panelWidthTablet: 210,
-  panelWidthMobile: 170,
-  panelHeightDesktop: 322,
-  panelHeightTablet: 282,
-  panelHeightMobile: 240,
-  scrollDistanceVh: 420,
+const CONFIG = {
+  radius: 300,
+  panelWidth: 170,
+  panelHeight: 230,
+  rings: 3,
+  ringSpacing: 200,
   cameraZ: 980,
   cameraY: 20,
-  frontOpacity: 1,
-  backOpacity: 0.1,
-  frontScale: 1.08,
-  sideScale: 0.74,
+  wheelInfluence: 0.0018,
+  momentumDecay: 0.92,
+  smoothing: 0.08,
 };
 
-const select = (selector) => document.querySelector(selector);
+const stage = document.querySelector('[data-stage]');
+if (!stage || !window.THREE) {
+  console.warn('Three.js stage not available.');
+} else {
+  const { THREE } = window;
 
-const setDetail = (detailCard, item) => {
-  if (!detailCard || !item) return;
-  const label = detailCard.querySelector('.detail-card__label');
-  const title = detailCard.querySelector('.detail-card__title');
-  const description = detailCard.querySelector('.detail-card__description');
-  const cta = detailCard.querySelector('.detail-card__cta');
-
-  if (label) label.textContent = item.subtitle;
-  if (title) title.textContent = item.title;
-  if (description) description.textContent = item.description;
-  if (cta) {
-    cta.textContent = item.ctaLabel;
-    cta.setAttribute('href', item.ctaHref);
-  }
-};
-
-const createTextureFactory = (THREE) => (item) => {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 1280;
-  const ctx = canvas.getContext('2d');
-
-  if (ctx) {
-    const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    bg.addColorStop(0, 'rgba(250,253,255,0.98)');
-    bg.addColorStop(1, 'rgba(219,236,255,0.92)');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = item.theme;
-    ctx.fillRect(0, 0, canvas.width, 52);
-
-    ctx.fillStyle = 'rgba(188,218,250,0.85)';
-    ctx.fillRect(74, 92, 876, 560);
-
-    ctx.fillStyle = '#2d6298';
-    ctx.font = '600 42px Plus Jakarta Sans, Arial';
-    ctx.fillText(item.subtitle, 74, 750);
-
-    ctx.fillStyle = '#0e2842';
-    ctx.font = '700 70px Fraunces, Georgia';
-    ctx.fillText(item.title, 74, 846);
-
-    ctx.fillStyle = '#344b63';
-    ctx.font = '500 38px Plus Jakarta Sans, Arial';
-    const words = item.description.split(' ');
-    let line = '';
-    let y = 926;
-    words.forEach((word) => {
-      const candidate = `${line}${word} `;
-      if (ctx.measureText(candidate).width > 866) {
-        ctx.fillText(line, 74, y);
-        line = `${word} `;
-        y += 50;
-      } else {
-        line = candidate;
-      }
-    });
-    if (line) ctx.fillText(line, 74, y);
-  }
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-
-  const image = new Image();
-  image.decoding = 'async';
-  image.src = item.image;
-  image.onload = () => {
-    const drawCtx = canvas.getContext('2d');
-    if (!drawCtx) return;
-    drawCtx.fillStyle = 'rgba(188,218,250,0.85)';
-    drawCtx.fillRect(74, 92, 876, 560);
-    drawCtx.drawImage(image, 74, 92, 876, 560);
-    texture.needsUpdate = true;
-  };
-  image.onerror = () => {
-    console.warn(`[cylinder] Media failed to load: ${item.image}`);
-  };
-
-  return texture;
-};
-
-const initCylinder = () => {
-  const section = select('.cylinder-section');
-  const enhanced = select('[data-cylinder-enhanced]');
-  const stage = select('[data-cylinder-stage]');
-  const detail = select('[data-cylinder-detail]');
-
-  if (!section || !enhanced || !stage || !detail) return;
-
-  setDetail(detail, CYLINDER_ITEMS[0]);
-  section.classList.remove('is-enhanced');
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    console.warn('[cylinder] Reduced motion enabled; keeping static fallback.');
-    return;
-  }
-
-  if (!window.THREE || !window.gsap || !window.ScrollTrigger) {
-    console.warn('[cylinder] Missing required libraries; keeping static fallback.');
-    return;
-  }
-
-  const { THREE, gsap, ScrollTrigger } = window;
-  gsap.registerPlugin(ScrollTrigger);
-
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
-  } catch (error) {
-    console.warn('[cylinder] WebGL initialization failed; keeping static fallback.', error);
-    return;
-  }
-
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.setClearAlpha(0);
   stage.appendChild(renderer.domElement);
 
-  section.classList.add('is-enhanced');
-  const stageRect = stage.getBoundingClientRect();
-  if (stageRect.width < 60 || stageRect.height < 60) {
-    console.warn('[cylinder] Stage size invalid after enhancement; reverting to fallback.');
-    section.classList.remove('is-enhanced');
-    renderer.dispose();
-    renderer.domElement.remove();
-    return;
-  }
-
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 4000);
-  camera.position.set(0, CYLINDER_CONFIG.cameraY, CYLINDER_CONFIG.cameraZ);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-  const keyLight = new THREE.DirectionalLight(0xdbe9ff, 1.14);
-  keyLight.position.set(160, 200, 300);
-  scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0xa9beff, 0.68);
-  fillLight.position.set(-260, 40, 100);
-  scene.add(fillLight);
-  const rimLight = new THREE.DirectionalLight(0x88bbff, 0.5);
-  rimLight.position.set(0, -160, -260);
-  scene.add(rimLight);
+  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 4000);
+  camera.position.set(0, CONFIG.cameraY, CONFIG.cameraZ);
 
-  const world = new THREE.Group();
-  scene.add(world);
+  const ambient = new THREE.AmbientLight(0xffffff, 0.9);
+  scene.add(ambient);
 
-  const createTexture = createTextureFactory(THREE);
-  const panels = [];
+  const key = new THREE.DirectionalLight(0xbad6ff, 1.35);
+  key.position.set(180, 220, 320);
+  scene.add(key);
 
-  const getSizes = () => {
-    const width = window.innerWidth;
-    if (width < 700) {
-      return {
-        radius: CYLINDER_CONFIG.radiusMobile,
-        panelWidth: CYLINDER_CONFIG.panelWidthMobile,
-        panelHeight: CYLINDER_CONFIG.panelHeightMobile,
-      };
+  const fill = new THREE.DirectionalLight(0x89a8ff, 0.7);
+  fill.position.set(-260, 40, 120);
+  scene.add(fill);
+
+  const rim = new THREE.PointLight(0x7bc9ff, 0.9, 2400);
+  rim.position.set(0, -120, -300);
+  scene.add(rim);
+
+  const cylinderGroup = new THREE.Group();
+  scene.add(cylinderGroup);
+
+  const makeTexture = (item) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 768;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grad.addColorStop(0, 'rgba(245,250,255,0.98)');
+      grad.addColorStop(1, 'rgba(211,231,255,0.94)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = item.color;
+      ctx.fillRect(0, 0, canvas.width, 24);
+
+      ctx.fillStyle = '#15304d';
+      ctx.font = '700 54px Arial';
+      ctx.fillText(item.title, 48, 110);
+
+      ctx.strokeStyle = 'rgba(59,94,132,0.2)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
     }
-    if (width < 1040) {
-      return {
-        radius: CYLINDER_CONFIG.radiusTablet,
-        panelWidth: CYLINDER_CONFIG.panelWidthTablet,
-        panelHeight: CYLINDER_CONFIG.panelHeightTablet,
-      };
-    }
-    return {
-      radius: CYLINDER_CONFIG.radiusDesktop,
-      panelWidth: CYLINDER_CONFIG.panelWidthDesktop,
-      panelHeight: CYLINDER_CONFIG.panelHeightDesktop,
-    };
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
   };
 
-  const ringCount = CYLINDER_CONFIG.rings;
-  const angleStep = (Math.PI * 2) / CYLINDER_ITEMS.length;
-  const totalSpan = ringCount === 1 ? 0 : CYLINDER_CONFIG.ringYOffset;
+  const panels = [];
+  const angleStep = (Math.PI * 2) / PANEL_CONTENT.length;
 
-  for (let ring = 0; ring < ringCount; ring += 1) {
-    const yOffset = ringCount === 1 ? 0 : -totalSpan / 2 + (totalSpan / (ringCount - 1)) * ring;
-    for (let i = 0; i < CYLINDER_ITEMS.length; i += 1) {
-      const item = CYLINDER_ITEMS[(i + ring) % CYLINDER_ITEMS.length];
-      const texture = createTexture(item);
+  for (let ring = 0; ring < CONFIG.rings; ring += 1) {
+    const yOffset = (ring - (CONFIG.rings - 1) / 2) * CONFIG.ringSpacing;
+
+    PANEL_CONTENT.forEach((item, index) => {
+      const texture = makeTexture(item);
       const material = new THREE.MeshPhysicalMaterial({
         map: texture,
         roughness: 0.22,
         metalness: 0.06,
-        clearcoat: 0.62,
-        clearcoatRoughness: 0.29,
+        clearcoat: 0.68,
+        clearcoatRoughness: 0.3,
         transparent: true,
-        opacity: CYLINDER_CONFIG.frontOpacity,
+        opacity: 1,
         side: THREE.DoubleSide,
       });
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
-      world.add(mesh);
-      panels.push({
-        ring,
-        item,
-        texture,
-        material,
-        mesh,
-        baseAngle: i * angleStep + (ring % 2 ? angleStep / 2 : 0),
-        yOffset,
-      });
-    }
+
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.panelWidth, CONFIG.panelHeight), material);
+      const angle = index * angleStep + (ring % 2 ? angleStep / 2 : 0);
+      const x = Math.sin(angle) * CONFIG.radius;
+      const z = Math.cos(angle) * CONFIG.radius;
+
+      mesh.position.set(x, yOffset, z);
+      mesh.lookAt(0, yOffset * 0.05, 0);
+
+      cylinderGroup.add(mesh);
+      panels.push({ mesh, material, texture });
+    });
   }
 
-  const sizeAndPosition = () => {
-    const rect = stage.getBoundingClientRect();
-    const width = Math.max(rect.width, 320);
-    const height = Math.max(rect.height, 360);
-    const { radius, panelWidth, panelHeight } = getSizes();
+  let targetRotation = 0;
+  let currentRotation = 0;
+  let wheelMomentum = 0;
 
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-
-    panels.forEach((panel) => {
-      panel.mesh.geometry.dispose();
-      panel.mesh.geometry = new THREE.PlaneGeometry(panelWidth, panelHeight);
-      panel.mesh.position.set(
-        Math.sin(panel.baseAngle) * radius,
-        panel.yOffset,
-        Math.cos(panel.baseAngle) * radius,
-      );
-      panel.mesh.lookAt(0, panel.yOffset * 0.05, 0);
-    });
+  const onScroll = () => {
+    const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    const progress = window.scrollY / max;
+    targetRotation = progress * Math.PI * 4;
   };
 
-  const vector = new THREE.Vector3();
-  const state = { progress: 0 };
-  let activeIndex = 0;
-
-  const render = () => {
-    world.rotation.y = -state.progress * Math.PI * 2;
-    world.rotation.x = -0.05;
-
-    let strongest = -1;
-    let strongestPanel = panels[0];
-
-    panels.forEach((panel) => {
-      panel.mesh.getWorldPosition(vector);
-      const frontness = THREE.MathUtils.clamp((vector.z + 620) / 1160, 0, 1);
-      const verticalInfluence = THREE.MathUtils.clamp(1 - Math.abs(vector.y) / 340, 0.4, 1);
-      const score = frontness * verticalInfluence;
-
-      panel.material.opacity = THREE.MathUtils.lerp(CYLINDER_CONFIG.backOpacity, CYLINDER_CONFIG.frontOpacity, score);
-      panel.mesh.scale.setScalar(THREE.MathUtils.lerp(CYLINDER_CONFIG.sideScale, CYLINDER_CONFIG.frontScale, score));
-
-      if (score > strongest) {
-        strongest = score;
-        strongestPanel = panel;
-      }
-    });
-
-    const nextIndex = CYLINDER_ITEMS.findIndex((item) => item.title === strongestPanel.item.title);
-    if (nextIndex !== activeIndex && nextIndex >= 0) {
-      activeIndex = nextIndex;
-      setDetail(detail, CYLINDER_ITEMS[nextIndex]);
-      gsap.fromTo(detail, { y: 14, opacity: 0.74 }, { y: 0, opacity: 1, duration: 0.26, overwrite: true });
-    }
-
-    renderer.render(scene, camera);
+  const onWheel = (event) => {
+    wheelMomentum += event.deltaY * CONFIG.wheelInfluence;
   };
-
-  const spinTween = gsap.to(state, {
-    progress: 1.25,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: enhanced,
-      start: 'top top',
-      end: `+=${window.innerHeight * (CYLINDER_CONFIG.scrollDistanceVh / 100)}`,
-      pin: true,
-      scrub: 1,
-      invalidateOnRefresh: true,
-      anticipatePin: 1,
-      onUpdate: render,
-      onRefresh: () => {
-        sizeAndPosition();
-        render();
-      },
-    },
-  });
 
   const onResize = () => {
-    sizeAndPosition();
-    render();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
   };
 
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('wheel', onWheel, { passive: true });
   window.addEventListener('resize', onResize);
 
-  sizeAndPosition();
-  render();
+  onScroll();
+
+  const tmp = new THREE.Vector3();
+
+  const animate = () => {
+    wheelMomentum *= CONFIG.momentumDecay;
+    targetRotation += wheelMomentum;
+
+    currentRotation += (targetRotation - currentRotation) * CONFIG.smoothing;
+    cylinderGroup.rotation.y = -currentRotation;
+    cylinderGroup.rotation.x = -0.05;
+
+    panels.forEach((panel) => {
+      panel.mesh.getWorldPosition(tmp);
+      const frontness = THREE.MathUtils.clamp((tmp.z + 560) / 1160, 0, 1);
+      panel.material.opacity = THREE.MathUtils.lerp(0.12, 1, frontness);
+      const scale = THREE.MathUtils.lerp(0.72, 1.08, frontness);
+      panel.mesh.scale.setScalar(scale);
+    });
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  };
+
+  animate();
 
   window.addEventListener('beforeunload', () => {
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('wheel', onWheel);
     window.removeEventListener('resize', onResize);
-    spinTween.kill();
     panels.forEach((panel) => {
       panel.mesh.geometry.dispose();
       panel.material.dispose();
@@ -399,28 +180,4 @@ const initCylinder = () => {
     });
     renderer.dispose();
   }, { once: true });
-};
-
-const waitForLibrariesThenInit = () => {
-  const timeoutMs = 7000;
-  const stepMs = 100;
-  let elapsed = 0;
-
-  const poll = () => {
-    const ready = Boolean(window.THREE && window.gsap && window.ScrollTrigger);
-    if (ready || elapsed >= timeoutMs) {
-      if (!ready) {
-        console.warn('[cylinder] Library timeout reached. Static fallback remains active.');
-      }
-      initCylinder();
-      return;
-    }
-
-    elapsed += stepMs;
-    window.setTimeout(poll, stepMs);
-  };
-
-  poll();
-};
-
-document.addEventListener('DOMContentLoaded', waitForLibrariesThenInit);
+}

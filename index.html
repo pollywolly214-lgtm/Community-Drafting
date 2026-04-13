@@ -3,77 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500..700&display=swap" rel="stylesheet" />
+    <title>3D Cylinder Scroll</title>
     <link rel="stylesheet" href="styles.css" />
-    <title>Community Drafting | 3D Scroll Showcase</title>
   </head>
   <body>
-    <main>
-      <section class="intro section-shell">
-        <p class="eyebrow">COMMUNITY DRAFTING</p>
-        <h1>Scroll-driven upright 3D cylinder showcase</h1>
-        <p class="lede">This page is intentionally focused on the cylinder experience. Scroll down to pin the section and rotate through services in place.</p>
-      </section>
-
-      <section id="cylinder-showcase" class="cylinder-section section-shell" aria-label="3D service showcase">
-        <header class="cylinder-header">
-          <p class="eyebrow">INTERACTIVE SERVICES</p>
-          <h2>Visible by default. Enhanced with 3D when available.</h2>
-          <p>The fallback cards below always render first so this section never appears blank.</p>
-        </header>
-
-        <div class="cylinder-fallback" data-cylinder-fallback>
-          <article class="fallback-card">
-            <p class="fallback-card__label">Fabrication Ready</p>
-            <h3>3D Modeling</h3>
-            <p>Production-grade models and shop-ready outputs for real fabrication workflows.</p>
-            <a href="service-3d-modeling.html">Explore service</a>
-          </article>
-          <article class="fallback-card">
-            <p class="fallback-card__label">Field Documentation</p>
-            <h3>2D Modeling</h3>
-            <p>Clear 2D layouts and permit-ready documentation for install teams and stakeholders.</p>
-            <a href="service-2d-modeling.html">View details</a>
-          </article>
-          <article class="fallback-card">
-            <p class="fallback-card__label">Rapid Prototype</p>
-            <h3>3D Printing</h3>
-            <p>Functional prototypes and presentation models for validation and fit checks.</p>
-            <a href="service-3d-printing.html">See prints</a>
-          </article>
-          <article class="fallback-card">
-            <p class="fallback-card__label">Measured Scope</p>
-            <h3>On-site Visit</h3>
-            <p>In-person measurement and scope alignment to prevent rework and reduce risk.</p>
-            <a href="schedule-visit.html">Schedule visit</a>
-          </article>
-        </div>
-
-        <div class="cylinder-enhanced" data-cylinder-enhanced>
-          <div class="cylinder-stage-wrap">
-            <div class="cylinder-stage" data-cylinder-stage role="img" aria-label="A rotating vertical 3D cylinder of service panels."></div>
-          </div>
-          <article class="detail-card" data-cylinder-detail aria-live="polite">
-            <p class="detail-card__label">Featured service</p>
-            <h3 class="detail-card__title">3D Modeling</h3>
-            <p class="detail-card__description">Production-grade models and shop-ready outputs for real fabrication workflows.</p>
-            <a class="detail-card__cta" href="service-3d-modeling.html">Explore service</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="outro section-shell">
-        <h2>Need custom drafting support?</h2>
-        <p>Call directly and get a fixed-price quote with clear deliverables.</p>
-        <a href="call-designer.html">Call a designer</a>
-      </section>
-    </main>
+    <div class="stage" data-stage aria-label="Interactive vertical 3D cylinder"></div>
+    <div class="scroll-space" aria-hidden="true"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r164/three.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
     <script src="script.js" defer></script>
   </body>
 </html>

@@ -1,178 +1,22 @@
-:root {
-  --bg-a: #060b14;
-  --bg-b: #0b1220;
-  --ink-900: #e8edf8;
-  --ink-700: #b8c3d9;
-  --brand-700: #8dc0ff;
-  --brand-500: #4d8fe0;
-  --line: rgba(121, 157, 201, 0.24);
-  --card: linear-gradient(165deg, rgba(16, 24, 38, 0.9), rgba(12, 19, 31, 0.88));
-}
-
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  color: var(--ink-900);
-  background:
-    radial-gradient(circle at 12% 10%, rgba(104, 130, 255, 0.18), transparent 35%),
-    radial-gradient(circle at 88% 14%, rgba(79, 175, 255, 0.2), transparent 40%),
-    linear-gradient(180deg, var(--bg-a), var(--bg-b));
-  line-height: 1.6;
+  background: #000;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-main {
-  width: min(1200px, 100% - 2rem);
-  margin-inline: auto;
-  padding: 1rem 0 3rem;
-}
-
-.section-shell {
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: var(--card);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
-  padding: clamp(1rem, 2.4vw, 2rem);
-  margin-top: 1rem;
-}
-
-.eyebrow {
-  margin: 0;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--brand-700);
-}
-
-h1, h2, h3 {
-  margin: 0.35rem 0 0.55rem;
-  font-family: 'Fraunces', serif;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-}
-
-h1 { font-size: clamp(1.9rem, 3.5vw, 3rem); }
-h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); }
-h3 { font-size: clamp(1.2rem, 2vw, 1.55rem); }
-
-.intro .lede {
-  max-width: 62ch;
-  color: var(--ink-700);
-}
-
-.cylinder-header p {
-  max-width: 66ch;
-  color: var(--ink-700);
-  margin-top: 0;
-}
-
-.cylinder-fallback {
-  margin-top: 1rem;
-  display: grid;
-  gap: 0.85rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
-
-.fallback-card {
-  border: 1px solid var(--line);
-  border-radius: 0.85rem;
-  padding: 1rem;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(227, 240, 255, 0.84));
-  color: #14304c;
-}
-
-.fallback-card__label {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--brand-700);
-}
-
-.fallback-card a,
-.outro a,
-.detail-card__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 0.7rem;
-  padding: 0.56rem 0.95rem;
-  border-radius: 999px;
-  text-decoration: none;
-  color: #fff;
-  border: 1px solid transparent;
-  background: linear-gradient(140deg, var(--brand-700), var(--brand-500));
-  box-shadow: 0 10px 22px rgba(40, 95, 152, 0.25);
-  font-weight: 650;
-}
-
-.cylinder-enhanced {
-  --showcase-height: clamp(560px, 86vh, 760px);
-  display: none;
-  margin-top: 1rem;
-  min-height: var(--showcase-height);
-  border: 1px solid var(--line);
-  border-radius: 0.95rem;
-  padding: clamp(0.9rem, 2.3vw, 1.7rem);
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(78, 117, 170, 0.42), rgba(8, 12, 18, 0.88) 54%),
-    linear-gradient(180deg, rgba(4, 7, 13, 0.65), rgba(5, 8, 13, 0.88));
-}
-
-.cylinder-section.is-enhanced .cylinder-enhanced { display: block; }
-.cylinder-section.is-enhanced .cylinder-fallback { display: none; }
-
-.cylinder-stage-wrap {
-  position: absolute;
+.stage {
+  position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
-  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(24, 42, 70, 0.55), rgba(0, 0, 0, 0.98) 62%),
+    #000;
 }
 
-.cylinder-stage {
-  width: min(100%, 980px);
-  height: 100%;
-}
-
-.detail-card {
-  width: min(430px, 100%);
-  margin-left: auto;
-  margin-top: auto;
-  position: relative;
-  z-index: 3;
-  border: 1px solid var(--line);
-  border-radius: 0.8rem;
-  padding: 1rem;
-  background: linear-gradient(168deg, rgba(18, 30, 48, 0.95), rgba(16, 25, 39, 0.88));
-  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.35);
-}
-
-.detail-card__label {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.72rem;
-  color: var(--brand-700);
-  font-weight: 700;
-}
-
-.detail-card__description { margin: 0; color: var(--ink-700); }
-
-.outro { text-align: center; }
-
-@media (max-width: 780px) {
-  .cylinder-enhanced {
-    --showcase-height: 560px;
-    padding: 0.9rem;
-  }
-  .detail-card {
-    margin-inline: auto;
-    width: 100%;
-  }
+.scroll-space {
+  height: 560vh;
 }
