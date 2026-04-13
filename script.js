@@ -20,6 +20,8 @@ const CONFIG = {
   wheelInfluence: 0.0018,
   momentumDecay: 0.92,
   smoothing: 0.08,
+  cylinderHeight: 640,
+  cylinderRadiusRatio: 0.9,
 };
 
 const stage = document.querySelector('[data-stage]');
@@ -56,6 +58,35 @@ if (!stage || !window.THREE) {
 
   const cylinderGroup = new THREE.Group();
   scene.add(cylinderGroup);
+
+  const coreMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x245b8f,
+    roughness: 0.35,
+    metalness: 0.08,
+    transmission: 0.08,
+    transparent: true,
+    opacity: 0.34,
+    side: THREE.DoubleSide,
+  });
+  const coreMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      CONFIG.radius * CONFIG.cylinderRadiusRatio,
+      CONFIG.radius * CONFIG.cylinderRadiusRatio,
+      CONFIG.cylinderHeight,
+      64,
+      1,
+      true,
+    ),
+    coreMaterial,
+  );
+  cylinderGroup.add(coreMesh);
+
+  const edgeGeometry = new THREE.EdgesGeometry(coreMesh.geometry);
+  const edgeLines = new THREE.LineSegments(
+    edgeGeometry,
+    new THREE.LineBasicMaterial({ color: 0x7bc9ff, transparent: true, opacity: 0.4 }),
+  );
+  cylinderGroup.add(edgeLines);
 
   const makeTexture = (item) => {
     const canvas = document.createElement('canvas');
@@ -178,6 +209,10 @@ if (!stage || !window.THREE) {
       panel.material.dispose();
       panel.texture.dispose();
     });
+    coreMesh.geometry.dispose();
+    coreMaterial.dispose();
+    edgeGeometry.dispose();
+    edgeLines.material.dispose();
     renderer.dispose();
   }, { once: true });
 }
