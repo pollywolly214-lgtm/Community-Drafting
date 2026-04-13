@@ -1,44 +1,26 @@
-const PANEL_CONTENT = [
-  { title: 'Modeling', color: '#7fd3ff' },
-  { title: 'Layouts', color: '#8ea0ff' },
-  { title: 'Printing', color: '#6dd8ff' },
-  { title: 'Site Visit', color: '#9db2ff' },
-  { title: 'Permits', color: '#79beff' },
-  { title: 'Revisions', color: '#75d4ff' },
-  { title: 'Support', color: '#95a3ff' },
-  { title: 'Delivery', color: '#68b2ff' },
-];
-
 const CONFIG = {
-  radius: 300,
-  panelWidth: 170,
-  panelHeight: 230,
-  rings: 3,
-  ringSpacing: 200,
-  cameraZ: 980,
-  cameraY: 20,
-  wheelInfluence: 0.0018,
+  radius: 240,
+  height: 620,
+  radialSegments: 128,
+  cameraZ: 860,
+  cameraY: 40,
+  wheelInfluence: 0.0016,
   momentumDecay: 0.92,
-  smoothing: 0.08,
-  cylinderHeight: 640,
-  cylinderRadiusRatio: 0.9,
+  smoothing: 0.09,
+  scrollTurns: 3.2,
 };
 
 const stage = document.querySelector('[data-stage]');
 const fallbackCylinder = document.querySelector('[data-fallback-cylinder]');
 
-const updateFallbackCylinder = () => {
+const showFallback = (message) => {
   if (!fallbackCylinder) return;
-  const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-  const progress = window.scrollY / max;
-  fallbackCylinder.style.transform = `translate(-50%, -50%) rotateY(${progress * 1280}deg)`;
+  fallbackCylinder.textContent = message;
+  fallbackCylinder.classList.remove('is-hidden');
 };
 
-window.addEventListener('scroll', updateFallbackCylinder, { passive: true });
-updateFallbackCylinder();
-
 if (!stage || !window.THREE) {
-  console.warn('Three.js stage not available.');
+  showFallback('3D engine unavailable');
 } else {
   const { THREE } = window;
 
@@ -46,123 +28,110 @@ if (!stage || !window.THREE) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.06;
   stage.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x02060d, 900, 1600);
 
-  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 4000);
+  const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 4000);
   camera.position.set(0, CONFIG.cameraY, CONFIG.cameraZ);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 0.9);
-  scene.add(ambient);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.52));
 
-  const key = new THREE.DirectionalLight(0xbad6ff, 1.35);
-  key.position.set(180, 220, 320);
+  const key = new THREE.DirectionalLight(0x9dd2ff, 1.45);
+  key.position.set(240, 280, 290);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0x89a8ff, 0.7);
-  fill.position.set(-260, 40, 120);
+  const fill = new THREE.DirectionalLight(0x6f87ff, 0.55);
+  fill.position.set(-260, 30, 120);
   scene.add(fill);
 
-  const rim = new THREE.PointLight(0x7bc9ff, 0.9, 2400);
-  rim.position.set(0, -120, -300);
+  const rim = new THREE.PointLight(0x51b8ff, 1.35, 2600);
+  rim.position.set(0, -80, -260);
   scene.add(rim);
 
-  const cylinderGroup = new THREE.Group();
-  scene.add(cylinderGroup);
-
-  const coreMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x4ea8ff,
-    roughness: 0.22,
-    metalness: 0.2,
-    transmission: 0.14,
-    transparent: true,
-    opacity: 0.72,
-    emissive: 0x0f3d66,
-    emissiveIntensity: 0.45,
-    side: THREE.DoubleSide,
-  });
-  const coreMesh = new THREE.Mesh(
-    new THREE.CylinderGeometry(
-      CONFIG.radius * CONFIG.cylinderRadiusRatio,
-      CONFIG.radius * CONFIG.cylinderRadiusRatio,
-      CONFIG.cylinderHeight,
-      64,
-      1,
-      true,
-    ),
-    coreMaterial,
-  );
-  cylinderGroup.add(coreMesh);
-
-  const edgeGeometry = new THREE.EdgesGeometry(coreMesh.geometry);
-  const edgeLines = new THREE.LineSegments(
-    edgeGeometry,
-    new THREE.LineBasicMaterial({ color: 0x7bc9ff, transparent: true, opacity: 0.4 }),
-  );
-  cylinderGroup.add(edgeLines);
-
-  const makeTexture = (item) => {
+  const buildCylinderTexture = () => {
     const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 768;
+    canvas.width = 2048;
+    canvas.height = 1024;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      grad.addColorStop(0, 'rgba(245,250,255,0.98)');
-      grad.addColorStop(1, 'rgba(211,231,255,0.94)');
-      ctx.fillStyle = grad;
+      const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      bg.addColorStop(0, '#d8ebff');
+      bg.addColorStop(0.5, '#f2f8ff');
+      bg.addColorStop(1, '#c9def5');
+      ctx.fillStyle = bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = item.color;
-      ctx.fillRect(0, 0, canvas.width, 24);
+      const columns = 14;
+      const colWidth = canvas.width / columns;
+      for (let i = 0; i < columns; i += 1) {
+        const x = i * colWidth;
+        const tint = i % 2 === 0 ? 'rgba(78,140,208,0.22)' : 'rgba(112,170,232,0.14)';
+        ctx.fillStyle = tint;
+        ctx.fillRect(x + 8, 0, colWidth - 16, canvas.height);
 
-      ctx.fillStyle = '#15304d';
-      ctx.font = '700 54px Arial';
-      ctx.fillText(item.title, 48, 110);
+        ctx.fillStyle = '#1b426a';
+        ctx.font = '700 44px Arial';
+        ctx.fillText(`Panel ${i + 1}`, x + 26, 92);
 
-      ctx.strokeStyle = 'rgba(59,94,132,0.2)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+        ctx.strokeStyle = 'rgba(17,53,86,0.2)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + 24, 130, colWidth - 48, canvas.height - 180);
+
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillRect(x + 34, 148, colWidth - 68, canvas.height - 330);
+      }
     }
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.anisotropy = 8;
     return texture;
   };
 
-  const panels = [];
-  const angleStep = (Math.PI * 2) / PANEL_CONTENT.length;
+  const texture = buildCylinderTexture();
 
-  for (let ring = 0; ring < CONFIG.rings; ring += 1) {
-    const yOffset = (ring - (CONFIG.rings - 1) / 2) * CONFIG.ringSpacing;
+  const cylinder = new THREE.Mesh(
+    new THREE.CylinderGeometry(CONFIG.radius, CONFIG.radius, CONFIG.height, CONFIG.radialSegments, 1, false),
+    new THREE.MeshPhysicalMaterial({
+      map: texture,
+      roughness: 0.32,
+      metalness: 0.12,
+      clearcoat: 0.72,
+      clearcoatRoughness: 0.24,
+      sheen: 0.3,
+      sheenColor: new THREE.Color(0xa8d4ff),
+    }),
+  );
+  scene.add(cylinder);
 
-    PANEL_CONTENT.forEach((item, index) => {
-      const texture = makeTexture(item);
-      const material = new THREE.MeshPhysicalMaterial({
-        map: texture,
-        roughness: 0.22,
-        metalness: 0.06,
-        clearcoat: 0.68,
-        clearcoatRoughness: 0.3,
-        transparent: true,
-        opacity: 1,
-        side: THREE.DoubleSide,
-      });
+  const edge = new THREE.LineSegments(
+    new THREE.EdgesGeometry(cylinder.geometry, 30),
+    new THREE.LineBasicMaterial({ color: 0x7cc4ff, transparent: true, opacity: 0.26 }),
+  );
+  scene.add(edge);
 
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(CONFIG.panelWidth, CONFIG.panelHeight), material);
-      const angle = index * angleStep + (ring % 2 ? angleStep / 2 : 0);
-      const x = Math.sin(angle) * CONFIG.radius;
-      const z = Math.cos(angle) * CONFIG.radius;
+  const topGlow = new THREE.Mesh(
+    new THREE.CircleGeometry(CONFIG.radius * 0.98, 80),
+    new THREE.MeshBasicMaterial({ color: 0xb9e3ff, transparent: true, opacity: 0.22 }),
+  );
+  topGlow.rotation.x = -Math.PI / 2;
+  topGlow.position.y = CONFIG.height / 2 + 0.8;
+  scene.add(topGlow);
 
-      mesh.position.set(x, yOffset, z);
-      mesh.lookAt(0, yOffset * 0.05, 0);
-
-      cylinderGroup.add(mesh);
-      panels.push({ mesh, material, texture });
-    });
-  }
+  const floor = new THREE.Mesh(
+    new THREE.CircleGeometry(CONFIG.radius * 1.55, 80),
+    new THREE.MeshBasicMaterial({ color: 0x0e2742, transparent: true, opacity: 0.4 }),
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -(CONFIG.height / 2 + 80);
+  scene.add(floor);
 
   let targetRotation = 0;
   let currentRotation = 0;
@@ -170,8 +139,7 @@ if (!stage || !window.THREE) {
 
   const onScroll = () => {
     const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-    const progress = window.scrollY / max;
-    targetRotation = progress * Math.PI * 4;
+    targetRotation = (window.scrollY / max) * Math.PI * CONFIG.scrollTurns;
   };
 
   const onWheel = (event) => {
@@ -189,47 +157,36 @@ if (!stage || !window.THREE) {
   window.addEventListener('resize', onResize);
 
   onScroll();
-
-  const tmp = new THREE.Vector3();
+  if (fallbackCylinder) fallbackCylinder.classList.add('is-hidden');
 
   const animate = () => {
     wheelMomentum *= CONFIG.momentumDecay;
     targetRotation += wheelMomentum;
-
     currentRotation += (targetRotation - currentRotation) * CONFIG.smoothing;
-    cylinderGroup.rotation.y = -currentRotation;
-    cylinderGroup.rotation.x = -0.05;
 
-    panels.forEach((panel) => {
-      panel.mesh.getWorldPosition(tmp);
-      const frontness = THREE.MathUtils.clamp((tmp.z + 560) / 1160, 0, 1);
-      panel.material.opacity = THREE.MathUtils.lerp(0.12, 1, frontness);
-      const scale = THREE.MathUtils.lerp(0.72, 1.08, frontness);
-      panel.mesh.scale.setScalar(scale);
-    });
+    cylinder.rotation.y = -currentRotation;
+    edge.rotation.y = -currentRotation;
+    topGlow.rotation.z = -currentRotation;
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   };
 
-  if (fallbackCylinder) {
-    fallbackCylinder.classList.add('is-hidden');
-  }
   animate();
 
   window.addEventListener('beforeunload', () => {
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('wheel', onWheel);
     window.removeEventListener('resize', onResize);
-    panels.forEach((panel) => {
-      panel.mesh.geometry.dispose();
-      panel.material.dispose();
-      panel.texture.dispose();
-    });
-    coreMesh.geometry.dispose();
-    coreMaterial.dispose();
-    edgeGeometry.dispose();
-    edgeLines.material.dispose();
+    cylinder.geometry.dispose();
+    cylinder.material.map.dispose();
+    cylinder.material.dispose();
+    edge.geometry.dispose();
+    edge.material.dispose();
+    topGlow.geometry.dispose();
+    topGlow.material.dispose();
+    floor.geometry.dispose();
+    floor.material.dispose();
     renderer.dispose();
   }, { once: true });
 }

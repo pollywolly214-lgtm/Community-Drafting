@@ -21,41 +21,16 @@ body {
   position: fixed;
   left: 50%;
   top: 50%;
-  width: min(42vw, 420px);
-  height: min(58vh, 620px);
-  transform: translate(-50%, -50%) rotateY(0deg);
-  border-radius: 50% / 12%;
-  background:
-    radial-gradient(circle at 35% 40%, rgba(152, 220, 255, 0.55), transparent 58%),
-    linear-gradient(90deg, rgba(22, 66, 108, 0.88), rgba(97, 177, 235, 0.95), rgba(17, 55, 95, 0.88));
-  box-shadow:
-    inset -28px 0 40px rgba(0, 0, 0, 0.35),
-    inset 28px 0 40px rgba(255, 255, 255, 0.15),
-    0 0 120px rgba(95, 175, 255, 0.34);
-  transform-style: preserve-3d;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(114, 172, 235, 0.34);
+  border-radius: 999px;
+  padding: 0.72rem 1.2rem;
+  color: #9fd4ff;
+  background: rgba(7, 19, 34, 0.84);
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   transition: opacity 0.4s ease;
-}
-
-.fallback-cylinder::before,
-.fallback-cylinder::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  border-radius: 50%;
-}
-
-.fallback-cylinder::before {
-  top: -22px;
-  height: 46px;
-  background: radial-gradient(circle at 50% 40%, rgba(170, 228, 255, 0.85), rgba(48, 108, 164, 0.95));
-}
-
-.fallback-cylinder::after {
-  bottom: -22px;
-  height: 46px;
-  background: radial-gradient(circle at 50% 40%, rgba(16, 46, 80, 0.98), rgba(7, 22, 38, 1));
 }
 
 .fallback-cylinder.is-hidden {
