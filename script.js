@@ -25,6 +25,18 @@ const CONFIG = {
 };
 
 const stage = document.querySelector('[data-stage]');
+const fallbackCylinder = document.querySelector('[data-fallback-cylinder]');
+
+const updateFallbackCylinder = () => {
+  if (!fallbackCylinder) return;
+  const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+  const progress = window.scrollY / max;
+  fallbackCylinder.style.transform = `translate(-50%, -50%) rotateY(${progress * 1280}deg)`;
+};
+
+window.addEventListener('scroll', updateFallbackCylinder, { passive: true });
+updateFallbackCylinder();
+
 if (!stage || !window.THREE) {
   console.warn('Three.js stage not available.');
 } else {
@@ -60,12 +72,14 @@ if (!stage || !window.THREE) {
   scene.add(cylinderGroup);
 
   const coreMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x245b8f,
-    roughness: 0.35,
-    metalness: 0.08,
-    transmission: 0.08,
+    color: 0x4ea8ff,
+    roughness: 0.22,
+    metalness: 0.2,
+    transmission: 0.14,
     transparent: true,
-    opacity: 0.34,
+    opacity: 0.72,
+    emissive: 0x0f3d66,
+    emissiveIntensity: 0.45,
     side: THREE.DoubleSide,
   });
   const coreMesh = new THREE.Mesh(
@@ -198,6 +212,9 @@ if (!stage || !window.THREE) {
     requestAnimationFrame(animate);
   };
 
+  if (fallbackCylinder) {
+    fallbackCylinder.classList.add('is-hidden');
+  }
   animate();
 
   window.addEventListener('beforeunload', () => {
