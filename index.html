@@ -7,11 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <title>Community Drafting</title>
-    <meta name="description" content="Professional drafting support with upfront pricing, hourly billing, and clear communication." />
+    <meta name="description" content="Professional drafting support with free consultations, fixed-rate pricing, and clear communication." />
   </head>
   <body class="page-home">
     <header class="site-header">
@@ -27,20 +27,10 @@
         <div class="nav-links">
           <a class="nav-pill" href="index.html">Home</a>
           <a class="nav-pill" href="services.html">Services</a>
-          <a class="nav-pill" href="index.html#portfolio">Portfolio</a>
-          <a class="nav-pill" href="index.html#contact">Contact</a>
-          <div class="nav-dropdown">
-            <button class="nav-pill nav-pill--button" type="button" aria-expanded="false" aria-haspopup="true">Menu</button>
-            <div class="nav-dropdown-menu gradient-border">
-              <a href="call-designer.html">Call Designer Directly</a>
-              <a href="service-3d-modeling.html">3D Modeling</a>
-              <a href="service-2d-modeling.html">2D Modeling</a>
-              <a href="service-3d-printing.html">3D Printing</a>
-              <a href="schedule-visit.html">Schedule a Visit</a>
-            </div>
-          </div>
+          <a class="nav-pill" href="portfolio.html">Portfolio</a>
+          <a class="nav-pill" href="contact.html">Contact</a>
         </div>
-        <a class="nav-cta" href="call-designer.html">Get a quote</a>
+        <a class="nav-cta" href="call-designer.html">Get free consultation</a>
       </nav>
       <section class="hero">
         <div class="hero-content">
@@ -51,37 +41,40 @@
           </h1>
           <p class="hero-subtext">Community Drafting is built around clear communication, dependable delivery, and practical drafting support for every stage of your project.</p>
           <div class="hero-actions">
-            <a class="primary" href="call-designer.html">Get a quote</a>
-            <a class="secondary" href="#portfolio">View portfolio</a>
+            <a class="primary" href="call-designer.html">Get free consultation</a>
+            <a class="secondary" href="portfolio.html">View portfolio</a>
           </div>
         </div>
-        <div class="hero-card gradient-border">
+        <div class="hero-card gradient-border how-card">
           <h2>How it works</h2>
-          <p>1. Call a designer directly.</p>
-          <p>2. Get a free quote or schedule a free visit.</p>
-          <p>3. Work directly with a designer to get exactly what you want for a fixed price.</p>
+          <ol class="steps-list">
+            <li><strong>Talk with a designer.</strong> Call or request a free consultation so we can understand your sketch, photo, idea, or job-site need.</li>
+            <li><strong>Get a clear plan.</strong> We review the scope, answer questions for free, and give you an upfront fixed rate before drafting starts.</li>
+            <li><strong>Build the exact drawing package you need.</strong> Work directly with the designer through revisions until the model, plans, or print files match your project.</li>
+          </ol>
         </div>
       </section>
     </header>
 
     <main>
       <section id="portfolio" class="section section--tight">
-        <h2>Portfolio highlights</h2>
-        <p class="section-subtext">A quick look at recent work right at the top so you can see our quality immediately.</p>
+        <h2>Portfolio</h2>
+        <p class="section-subtext">See sample project types, photos, and descriptions on the dedicated portfolio page.</p>
         <div class="image-grid">
           <figure class="image-card gradient-border">
-            <img src="assets/placeholder-image.svg" alt="Portfolio highlight" data-admin-image="portfolio-1" />
-            <figcaption>Custom 3D model for fabrication planning.</figcaption>
+            <img src="assets/project-kitchen-layout.svg" alt="Kitchen layout drafting sample" data-admin-image="portfolio-1" />
+            <figcaption><strong>Residential layout package:</strong> measured 2D plans and elevations that help a homeowner and installer agree on dimensions before work begins.</figcaption>
           </figure>
           <figure class="image-card gradient-border">
-            <img src="assets/placeholder-image.svg" alt="Portfolio highlight" data-admin-image="portfolio-2" />
-            <figcaption>2D layout package ready for field use.</figcaption>
+            <img src="assets/project-product-model.svg" alt="Product modeling sample" data-admin-image="portfolio-2" />
+            <figcaption><strong>Custom product model:</strong> a concept turned into a clean 3D model for review, revisions, and fabrication planning.</figcaption>
           </figure>
           <figure class="image-card gradient-border">
-            <img src="assets/placeholder-image.svg" alt="Portfolio highlight" data-admin-image="portfolio-3" />
-            <figcaption>3D printed concept part for fit testing.</figcaption>
+            <img src="assets/project-printed-part.svg" alt="3D printed prototype sample" data-admin-image="portfolio-3" />
+            <figcaption><strong>Prototype print:</strong> a small part prepared, printed, and checked for fit before moving into final production.</figcaption>
           </figure>
         </div>
+        <a class="primary section-action" href="portfolio.html">View all projects</a>
       </section>
 
       <section class="section alt">
@@ -112,8 +105,26 @@
 
       <section id="contact" class="section">
         <h2>Contact</h2>
-        <p class="section-subtext">Have a project in mind? Share your scope and get an upfront quote with clear deliverables and timeline.</p>
-        <a class="primary" href="call-designer.html">Request a quote</a>
+        <p class="section-subtext">Meet the designers and choose who you want to contact directly.</p>
+        <div class="profile-grid">
+          <article class="profile-card gradient-border">
+            <img src="assets/profile-designer-one.svg" alt="Lead designer profile photo" data-admin-image="profile-1" />
+            <div>
+              <h3 data-admin-key="profile-one-name">Lead Designer</h3>
+              <p data-admin-key="profile-one-summary">Drafting, modeling, and project scoping support.</p>
+              <p><a href="mailto:hello@communitydrafting.com">hello@communitydrafting.com</a><br /><a href="tel:+15551234567">(555) 123-4567</a></p>
+            </div>
+          </article>
+          <article class="profile-card gradient-border">
+            <img src="assets/profile-designer-two.svg" alt="Project designer profile photo" data-admin-image="profile-2" />
+            <div>
+              <h3 data-admin-key="profile-two-name">Project Designer</h3>
+              <p data-admin-key="profile-two-summary">Measurements, revisions, and client communication.</p>
+              <p><a href="mailto:projects@communitydrafting.com">projects@communitydrafting.com</a><br /><a href="tel:+15559876543">(555) 987-6543</a></p>
+            </div>
+          </article>
+        </div>
+        <a class="primary section-action" href="contact.html">View full profiles</a>
       </section>
     </main>
 
