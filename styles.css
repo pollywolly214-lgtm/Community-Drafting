@@ -664,3 +664,103 @@ body.developer-mode-active .hero-card:hover {
     bottom: 5.8rem;
   }
 }
+
+/* Developer Mode UX fixes */
+.developer-window-area[hidden] {
+  display: none;
+}
+
+.developer-window-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.developer-custom-window__image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border: 1px solid rgba(130, 167, 205, 0.4);
+  border-radius: 0.72rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-card--wide {
+  grid-column: span 2;
+}
+
+.developer-help-text {
+  color: var(--slate-500);
+  font-size: 0.88rem;
+  margin-top: -0.4rem;
+}
+
+.developer-add-window-card select,
+.developer-add-window-card input[type="file"] {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  margin-bottom: 0.45rem;
+  border: 1px solid var(--slate-200);
+  border-radius: 0.55rem;
+  font-family: inherit;
+  padding: 0.45rem;
+}
+
+body.developer-mode-active .developer-text-editable {
+  cursor: text;
+  border-radius: 0.35rem;
+  background: rgba(255, 245, 235, 0.62);
+  box-shadow: 0 0 0 2px rgba(255, 138, 91, 0.42);
+}
+
+body.developer-mode-active .developer-text-editable:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 138, 91, 0.75);
+  outline: none;
+}
+
+body.developer-mode-active .developer-editable--active {
+  scroll-margin-top: 6rem;
+}
+
+body.developer-mode-active .developer-editable--active[draggable="true"] {
+  cursor: grab;
+}
+
+body.developer-mode-active .developer-editable--active[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.developer-editable--dragging {
+  opacity: 0.62;
+}
+
+.developer-editable--drop-target {
+  outline: 3px solid rgba(86, 196, 255, 0.88) !important;
+  outline-offset: 6px !important;
+  box-shadow: 0 0 0 6px rgba(86, 196, 255, 0.16), 0 20px 42px rgba(12, 31, 53, 0.18) !important;
+}
+
+.developer-font-select {
+  max-width: 150px;
+  border: 1px solid rgba(116, 151, 198, 0.35);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue-900);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
+}
+
+@media (max-width: 640px) {
+  .admin-card--wide {
+    grid-column: span 1;
+  }
+
+  .developer-window-grid {
+    grid-template-columns: 1fr;
+  }
+}
