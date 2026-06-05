@@ -1,45 +1,3 @@
-const dropdowns = Array.from(document.querySelectorAll(".nav-dropdown"));
-
-dropdowns.forEach((dropdown) => {
-  const button = dropdown.querySelector(".nav-pill--button");
-  if (!button) return;
-
-  button.addEventListener("click", (event) => {
-    event.stopPropagation();
-    const isOpen = dropdown.classList.contains("is-open");
-    dropdowns.forEach((item) => {
-      item.classList.remove("is-open");
-      const btn = item.querySelector(".nav-pill--button");
-      if (btn) btn.setAttribute("aria-expanded", "false");
-    });
-
-    if (!isOpen) {
-      dropdown.classList.add("is-open");
-      button.setAttribute("aria-expanded", "true");
-    }
-  });
-});
-
-document.addEventListener("click", (event) => {
-  dropdowns.forEach((dropdown) => {
-    if (!dropdown.contains(event.target)) {
-      dropdown.classList.remove("is-open");
-      const button = dropdown.querySelector(".nav-pill--button");
-      if (button) button.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    dropdowns.forEach((dropdown) => {
-      dropdown.classList.remove("is-open");
-      const button = dropdown.querySelector(".nav-pill--button");
-      if (button) button.setAttribute("aria-expanded", "false");
-    });
-  }
-});
-
 const ADMIN_PASSWORD = "abc";
 const STORAGE_KEY = "community-drafting-admin";
 const ADMIN_BODY_CLASS = "admin-active";
@@ -141,6 +99,7 @@ const saveAdminState = () => {
 };
 
 const setAdminMode = (enabled) => {
+  if (!adminPanel) return;
   adminEnabled = enabled;
   document.body.classList.toggle(ADMIN_BODY_CLASS, enabled);
   adminPanel.setAttribute("aria-hidden", String(!enabled));
@@ -159,6 +118,7 @@ const requestAdminMode = () => {
 };
 
 document.addEventListener("keydown", (event) => {
+  if (!adminPanel) return;
   if (event.ctrlKey && event.key === "`") {
     event.preventDefault();
     if (adminEnabled) {
@@ -169,32 +129,38 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-adminExitButton.addEventListener("click", () => {
-  setAdminMode(false);
-});
+if (adminExitButton) {
+  adminExitButton.addEventListener("click", () => {
+    setAdminMode(false);
+  });
+}
 
-adminSaveButton.addEventListener("click", () => {
-  saveAdminState();
-  setAdminMode(false);
-});
+if (adminSaveButton) {
+  adminSaveButton.addEventListener("click", () => {
+    saveAdminState();
+    setAdminMode(false);
+  });
+}
 
-adminAddUpdate.addEventListener("click", () => {
-  const title = adminUpdateTitle.value.trim();
-  const body = adminUpdateBody.value.trim();
-  if (!title || !body) {
-    window.alert("Add both a title and details.");
-    return;
-  }
-  const updatesList = document.querySelector("[data-admin-list='updates']");
-  if (updatesList) {
-    const card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML = `<h3>${title}</h3><p>${body}</p>`;
-    updatesList.prepend(card);
-    adminUpdateTitle.value = "";
-    adminUpdateBody.value = "";
-  }
-});
+if (adminAddUpdate && adminUpdateTitle && adminUpdateBody) {
+  adminAddUpdate.addEventListener("click", () => {
+    const title = adminUpdateTitle.value.trim();
+    const body = adminUpdateBody.value.trim();
+    if (!title || !body) {
+      window.alert("Add both a title and details.");
+      return;
+    }
+    const updatesList = document.querySelector("[data-admin-list='updates']");
+    if (updatesList) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `<h3>${title}</h3><p>${body}</p>`;
+      updatesList.prepend(card);
+      adminUpdateTitle.value = "";
+      adminUpdateBody.value = "";
+    }
+  });
+}
 
 getEditableImages().forEach((img) => {
   img.addEventListener("click", () => {
@@ -202,22 +168,24 @@ getEditableImages().forEach((img) => {
       return;
     }
     activeImageTarget = img;
-    adminImageInput.click();
+    if (adminImageInput) adminImageInput.click();
   });
 });
 
-adminImageInput.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (!file || !activeImageTarget) {
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = () => {
-    activeImageTarget.src = reader.result;
-    activeImageTarget = null;
-    adminImageInput.value = "";
-  };
-  reader.readAsDataURL(file);
-});
+if (adminImageInput) {
+  adminImageInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file || !activeImageTarget) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      activeImageTarget.src = reader.result;
+      activeImageTarget = null;
+      adminImageInput.value = "";
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 applyAdminState(loadAdminState());
