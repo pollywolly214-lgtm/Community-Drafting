@@ -584,7 +584,7 @@ const applyPersonalizationState = (state) => {
     if (Number.isFinite(layout.height) && layout.height > 0) {
       element.style.height = `${layout.height}px`;
     }
-    if (Number.isFinite(layout.x) && Number.isFinite(layout.y)) {
+    if (layout.free === true && Number.isFinite(layout.x) && Number.isFinite(layout.y)) {
       const container = getLayoutContainer(element);
       ensureFreeLayoutContainer(container);
       element.classList.add("developer-free-layout-item");
@@ -638,9 +638,9 @@ const collectPersonalizationState = () => {
   getEditableLayoutItems().forEach((element, index) => {
     const id = getEditableId(element, index);
     const rect = element.getBoundingClientRect();
+    const isFree = element.classList.contains("developer-free-layout-item");
     pageLayout[id] = {
-      x: Math.round(element.offsetLeft || 0),
-      y: Math.round(element.offsetTop || 0),
+      ...(isFree ? { x: Math.round(element.offsetLeft || 0), y: Math.round(element.offsetTop || 0), free: true } : { free: false }),
       width: Math.round(rect.width),
       height: Math.round(rect.height),
       order: Number.parseInt(element.style.order || "", 10) || index + 1,
@@ -951,9 +951,11 @@ const beginLayoutDrag = (element, event) => {
   const container = getLayoutContainer(element);
   if (!container) return;
   ensureFreeLayoutContainer(container);
+  const startRect = rectFromElement(element);
+  element.classList.add("developer-free-layout-item");
+  applyLayoutRect(element, startRect);
   event.preventDefault();
   event.stopPropagation();
-  const startRect = rectFromElement(element);
   activeLayoutDrag = {
     element,
     container,
@@ -982,15 +984,6 @@ const setupDragHandlers = (element) => {
     beginLayoutDrag(element, event);
   });
 
-  element.addEventListener("mouseup", () => {
-    if (developerModeEnabled) {
-      const container = getLayoutContainer(element);
-      if (container) {
-        settleEditableItem(element, { ...rectFromElement(element), width: element.offsetWidth, height: element.offsetHeight });
-        savePersonalizationState();
-      }
-    }
-  });
 };
 
 document.addEventListener("pointermove", (event) => {
@@ -1020,20 +1013,6 @@ const initializeEditableLayoutItems = () => {
     element.classList.add("developer-editable");
     element.draggable = false;
     setupDragHandlers(element);
-    if (developerModeEnabled) {
-      const container = getLayoutContainer(element);
-      ensureFreeLayoutContainer(container);
-      element.classList.add("developer-free-layout-item");
-      const current = rectFromElement(element);
-      if (!Number.isFinite(current.x) || (!element.style.left && element.dataset.flowX)) {
-        applyLayoutRect(element, {
-          x: Number(element.dataset.flowX || 0),
-          y: Number(element.dataset.flowY || 0),
-          width: element.offsetWidth,
-          height: element.offsetHeight,
-        });
-      }
-    }
   });
 };
 
@@ -1341,9 +1320,6 @@ const setDeveloperMode = (enabled) => {
 
   getEditableLayoutItems().forEach((element) => {
     element.classList.toggle("developer-editable--active", enabled);
-    if (enabled || (element.style.left && element.style.top)) {
-      element.classList.add("developer-free-layout-item");
-    }
     element.draggable = false;
   });
 
