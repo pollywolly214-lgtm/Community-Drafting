@@ -1,14 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="title desc">
   <title id="title">Residential layout drafting sample</title>
-  <desc id="desc">Stylized drafting board with a residential floor plan, measurements, and blue accents.</desc>
+  <desc id="desc">Clean drafting board showing a measured room plan with walls, a door swing, dimension arrows, and ruler ticks.</desc>
   <rect width="720" height="460" rx="28" fill="#f8fbff"/>
   <rect x="58" y="52" width="604" height="356" rx="18" fill="#ffffff" stroke="#12375f" stroke-width="4"/>
-  <path d="M144 124h190v92h116v128H144z" fill="#e8f2ff" stroke="#0e3a66" stroke-width="8" stroke-linejoin="round"/>
-  <path d="M334 124v92M144 216h190M450 216h118M450 344h118" stroke="#0e3a66" stroke-width="6" stroke-linecap="round"/>
-  <path d="M198 216c0 42 28 68 68 68" fill="none" stroke="#3f84c5" stroke-width="5"/>
-  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round">
-    <path d="M118 96h484M118 380h484M100 116v244M620 116v244"/>
-    <path d="M118 96l-18 18M602 96l18 18M118 380l-18-18M602 380l18-18"/>
+  <rect x="92" y="88" width="536" height="284" rx="10" fill="#f8fbff" stroke="#8fa1b5" stroke-width="3"/>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 140h190v84h150v106H150z" fill="#e8f2ff" stroke="#0e3a66" stroke-width="8"/>
+    <path d="M340 140v84M150 224h190M490 224v106" stroke="#0e3a66" stroke-width="6"/>
+    <path d="M150 224c0 48 32 78 78 78" stroke="#3f84c5" stroke-width="5"/>
   </g>
+
+  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M150 116h340"/>
+    <path d="M150 106v20M490 106v20M150 116l18-10M150 116l18 10M490 116l-18-10M490 116l-18 10"/>
+    <path d="M122 140v190"/>
+    <path d="M112 140h20M112 330h20M122 140l-10 18M122 140l10 18M122 330l-10-18M122 330l10-18"/>
+  </g>
+
+  <g transform="translate(520 126)" stroke="#12375f" stroke-width="4" stroke-linecap="round">
+    <rect x="0" y="0" width="70" height="178" rx="8" fill="#dcecff" stroke="#12375f"/>
+    <path d="M16 24h38M16 48h26M16 72h38M16 96h26M16 120h38M16 144h26"/>
+  </g>
+
+  <text x="320" y="104" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="20" font-weight="700" fill="#343434">12 ft 4 in</text>
+  <text x="92" y="238" transform="rotate(-90 92 238)" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="20" font-weight="700" fill="#343434">8 ft 0 in</text>
   <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">measured plan</text>
 </svg>
