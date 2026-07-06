@@ -47,6 +47,12 @@ const LEGACY_ADMIN_STORAGE_KEY = "community-drafting-admin";
 const DEVELOPER_BODY_CLASS = "developer-mode-active";
 const EDITABLE_SELECTOR = ".hero-content, .hero-card, main > .section, .grid > .card, .image-grid > .image-card, .developer-custom-window";
 const EDITABLE_TEXT_SELECTOR = "h1, h2, h3, h4, p, figcaption, li, span[data-admin-key]";
+const PANEL_DEFAULT_POSITION = { x: 16, y: 16 };
+const GRID_SIZE = 12;
+const MIN_CARD_WIDTH = 180;
+const MIN_CARD_HEIGHT = 120;
+const MIN_BUBBLE_WIDTH = 90;
+const MIN_BUBBLE_HEIGHT = 44;
 const FONT_OPTIONS = [
   { label: "Default", value: "" },
   { label: "Arial", value: "Arial, sans-serif" },
@@ -71,6 +77,9 @@ let activeImageFilename = "";
 let activeWindowImageData = null;
 let activeWindowImageFilename = "";
 let draggedEditableItem = null;
+let activeLayoutDrag = null;
+let activeBubbleDrag = null;
+let activePanelDrag = null;
 let personalizationState = null;
 
 const pageKey = window.location.pathname.split("/").pop() || "index.html";
@@ -88,9 +97,15 @@ const sanitizeHtml = (value) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
+const normalizePanelPosition = (panel = {}) => ({
+  x: Number.isFinite(panel.x) ? panel.x : PANEL_DEFAULT_POSITION.x,
+  y: Number.isFinite(panel.y) ? panel.y : PANEL_DEFAULT_POSITION.y,
+  collapsed: Boolean(panel.collapsed),
+});
+
 const normalizePersonalizationState = (state = {}) => {
   const normalized = {
-    version: 2,
+    version: 3,
     updatedAt: state.updatedAt || new Date().toISOString(),
     images: state.images || {},
     layout: state.layout || {},
@@ -98,10 +113,23 @@ const normalizePersonalizationState = (state = {}) => {
     lists: state.lists || {},
     windows: Array.isArray(state.windows) ? state.windows : [],
     pages: state.pages || {},
+    ui: {
+      ...(state.ui || {}),
+      panel: normalizePanelPosition(state.ui?.panel),
+    },
   };
 
+  Object.keys(normalized.pages).forEach((key) => {
+    normalized.pages[key] = {
+      text: normalized.pages[key]?.text || {},
+      layout: normalized.pages[key]?.layout || {},
+      windows: Array.isArray(normalized.pages[key]?.windows) ? normalized.pages[key].windows : [],
+      bubbles: normalized.pages[key]?.bubbles || {},
+    };
+  });
+
   if (!normalized.pages[pageKey]) {
-    normalized.pages[pageKey] = { text: {}, layout: {}, windows: [] };
+    normalized.pages[pageKey] = { text: {}, layout: {}, windows: [], bubbles: {} };
   }
 
   return normalized;
@@ -145,6 +173,196 @@ const saveStateObject = (state) => {
   state.updatedAt = new Date().toISOString();
   localStorage.setItem(PERSONALIZATION_STORAGE_KEY, JSON.stringify(state));
 };
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
+
+const snapToGrid = (value, gridSize = GRID_SIZE) => Math.round(value / gridSize) * gridSize;
+
+const clampToViewport = (position, width, height) => ({
+  x: clamp(Number.isFinite(position?.x) ? position.x : PANEL_DEFAULT_POSITION.x, 8, window.innerWidth - width - 8),
+  y: clamp(Number.isFinite(position?.y) ? position.y : PANEL_DEFAULT_POSITION.y, 8, window.innerHeight - height - 8),
+});
+
+const clampPanelPosition = (position) => {
+  if (!adminPanel) return normalizePanelPosition(position);
+  const rect = adminPanel.getBoundingClientRect();
+  return clampToViewport(position, Math.min(rect.width || 430, window.innerWidth - 16), Math.min(rect.height || 240, window.innerHeight - 16));
+};
+
+const clampToContainer = (rect, container, minWidth = MIN_CARD_WIDTH, minHeight = MIN_CARD_HEIGHT) => {
+  const maxWidth = Math.max(minWidth, container.clientWidth);
+  const maxHeight = Math.max(minHeight, container.clientHeight);
+  const width = clamp(Number.isFinite(rect.width) ? rect.width : minWidth, minWidth, maxWidth);
+  const height = clamp(Number.isFinite(rect.height) ? rect.height : minHeight, minHeight, maxHeight);
+  return {
+    x: clamp(Number.isFinite(rect.x) ? rect.x : 0, 0, Math.max(0, container.clientWidth - width)),
+    y: clamp(Number.isFinite(rect.y) ? rect.y : 0, 0, Math.max(0, container.clientHeight - height)),
+    width,
+    height,
+  };
+};
+
+const detectOverlap = (a, b) => !(
+  a.x + a.width <= b.x ||
+  b.x + b.width <= a.x ||
+  a.y + a.height <= b.y ||
+  b.y + b.height <= a.y
+);
+
+const rectFromElement = (element) => ({
+  x: element.offsetLeft,
+  y: element.offsetTop,
+  width: element.offsetWidth,
+  height: element.offsetHeight,
+});
+
+const findNearestNonOverlappingPosition = (candidate, others, container) => {
+  const initial = clampToContainer(candidate, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
+  if (!others.some((other) => detectOverlap(initial, other))) return initial;
+
+  const step = GRID_SIZE;
+  const maxRadius = Math.max(container.clientWidth, container.clientHeight) + step;
+  let best = null;
+  let bestDistance = Infinity;
+  for (let radius = step; radius <= maxRadius; radius += step) {
+    for (let dx = -radius; dx <= radius; dx += step) {
+      for (let dy = -radius; dy <= radius; dy += step) {
+        if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) continue;
+        const option = clampToContainer({ ...initial, x: initial.x + dx, y: initial.y + dy }, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
+        if (others.some((other) => detectOverlap(option, other))) continue;
+        const distance = Math.hypot(option.x - initial.x, option.y - initial.y);
+        if (distance < bestDistance) {
+          best = option;
+          bestDistance = distance;
+        }
+      }
+    }
+    if (best) return best;
+  }
+  return initial;
+};
+
+const getLayoutContainer = (element) => element.parentElement;
+
+const getSiblingRects = (element) => getSiblingLayoutItems(element)
+  .filter((item) => item !== element && item.classList.contains("developer-free-layout-item"))
+  .map(rectFromElement);
+
+const applyLayoutRect = (element, rect) => {
+  element.style.left = `${Math.round(rect.x)}px`;
+  element.style.top = `${Math.round(rect.y)}px`;
+  element.style.width = `${Math.round(rect.width)}px`;
+  element.style.height = `${Math.round(rect.height)}px`;
+};
+
+const ensureFreeLayoutContainer = (container) => {
+  if (!container || container.dataset.freeLayoutReady === "true") return;
+  const children = Array.from(container.children).filter((child) => child.classList?.contains("developer-editable"));
+  if (children.length < 1) return;
+  const containerRect = container.getBoundingClientRect();
+  children.forEach((child) => {
+    const childRect = child.getBoundingClientRect();
+    child.dataset.flowX = String(Math.max(0, Math.round(childRect.left - containerRect.left + container.scrollLeft)));
+    child.dataset.flowY = String(Math.max(0, Math.round(childRect.top - containerRect.top + container.scrollTop)));
+  });
+  container.style.minHeight = `${Math.max(container.clientHeight, ...children.map((child) => Number(child.dataset.flowY || 0) + child.offsetHeight + 16))}px`;
+  container.classList.add("developer-free-layout-container");
+  container.dataset.freeLayoutReady = "true";
+};
+
+const createPanelControls = () => {
+  if (!adminPanel || adminPanel.dataset.panelControlsReady === "true") return;
+  adminPanel.dataset.panelControlsReady = "true";
+  const header = adminPanel.querySelector(".admin-panel__header");
+  const actions = adminPanel.querySelector(".admin-actions");
+  if (!header || !actions) return;
+  header.classList.add("admin-panel__drag-handle");
+  header.title = "Drag to move Developer Mode panel";
+  const reset = document.createElement("button");
+  reset.className = "ghost admin-panel__utility";
+  reset.type = "button";
+  reset.textContent = "Reset Panel Position";
+  reset.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setPanelPosition(PANEL_DEFAULT_POSITION, true);
+  });
+  const collapse = document.createElement("button");
+  collapse.className = "ghost admin-panel__utility";
+  collapse.type = "button";
+  collapse.textContent = "Minimize";
+  collapse.addEventListener("click", (event) => {
+    event.stopPropagation();
+    togglePanelCollapsed();
+  });
+  actions.prepend(reset, collapse);
+  header.addEventListener("pointerdown", startPanelDrag);
+};
+
+const setPanelPosition = (position, persist = false) => {
+  if (!adminPanel) return;
+  const clamped = clampPanelPosition(position);
+  adminPanel.style.left = `${Math.round(clamped.x)}px`;
+  adminPanel.style.top = `${Math.round(clamped.y)}px`;
+  adminPanel.style.right = "auto";
+  adminPanel.style.bottom = "auto";
+  if (persist) {
+    const state = normalizePersonalizationState(personalizationState || loadPersonalizationState());
+    state.ui.panel = { ...normalizePanelPosition(state.ui.panel), ...clamped };
+    personalizationState = state;
+    saveStateObject(state);
+  }
+};
+
+const applyPanelState = () => {
+  if (!adminPanel) return;
+  createPanelControls();
+  const state = normalizePersonalizationState(personalizationState || loadPersonalizationState());
+  const clamped = clampPanelPosition(state.ui.panel);
+  state.ui.panel = { ...state.ui.panel, ...clamped };
+  personalizationState = state;
+  saveStateObject(state);
+  setPanelPosition(clamped, false);
+  adminPanel.classList.toggle("admin-panel--collapsed", Boolean(state.ui.panel.collapsed));
+  const collapseButton = adminPanel.querySelector(".admin-panel__utility:nth-child(2)");
+  if (collapseButton) collapseButton.textContent = state.ui.panel.collapsed ? "Expand" : "Minimize";
+};
+
+const togglePanelCollapsed = () => {
+  const state = normalizePersonalizationState(personalizationState || loadPersonalizationState());
+  state.ui.panel = { ...normalizePanelPosition(state.ui.panel), collapsed: !state.ui.panel.collapsed };
+  personalizationState = state;
+  saveStateObject(state);
+  applyPanelState();
+};
+
+const startPanelDrag = (event) => {
+  if (!developerModeEnabled || !adminPanel || event.target.closest("button, input, textarea, select, label")) return;
+  event.preventDefault();
+  const rect = adminPanel.getBoundingClientRect();
+  activePanelDrag = { dx: event.clientX - rect.left, dy: event.clientY - rect.top };
+  adminPanel.setPointerCapture?.(event.pointerId);
+};
+
+document.addEventListener("pointermove", (event) => {
+  if (activePanelDrag) {
+    setPanelPosition({ x: event.clientX - activePanelDrag.dx, y: event.clientY - activePanelDrag.dy }, false);
+  }
+});
+
+document.addEventListener("pointerup", () => {
+  if (activePanelDrag) {
+    activePanelDrag = null;
+    const rect = adminPanel.getBoundingClientRect();
+    setPanelPosition({ x: rect.left, y: rect.top }, true);
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (adminPanel) {
+    const rect = adminPanel.getBoundingClientRect();
+    setPanelPosition({ x: rect.left, y: rect.top }, true);
+  }
+});
 
 const getEditableId = (element, index = 0) => {
   if (element.dataset.developerId) {
@@ -245,6 +463,7 @@ const renderCustomWindows = (state) => {
       <h3>${sanitizeHtml(windowItem.title || "New window")}</h3>
       <p>${sanitizeHtml(windowItem.body || "Add details for this window.")}</p>
     `;
+    renderTextBubbles(card, state.pages?.[pageKey]?.bubbles?.[windowItem.id] || []);
     grid.append(card);
   });
 };
@@ -308,15 +527,23 @@ const applyPersonalizationState = (state) => {
     if (Number.isFinite(layout.height) && layout.height > 0) {
       element.style.height = `${layout.height}px`;
     }
+    if (Number.isFinite(layout.x) && Number.isFinite(layout.y)) {
+      const container = getLayoutContainer(element);
+      ensureFreeLayoutContainer(container);
+      element.classList.add("developer-free-layout-item");
+      element.style.left = `${layout.x}px`;
+      element.style.top = `${layout.y}px`;
+    }
     if (layout.fontFamily !== undefined) {
       element.style.fontFamily = layout.fontFamily;
     }
+    renderTextBubbles(element, state.pages?.[pageKey]?.bubbles?.[id] || []);
   });
 };
 
 const collectPersonalizationState = () => {
   const state = normalizePersonalizationState(personalizationState || loadPersonalizationState());
-  const page = state.pages[pageKey] || { text: {}, layout: {}, windows: [] };
+  const page = state.pages[pageKey] || { text: {}, layout: {}, windows: [], bubbles: {} };
   const globalText = { ...state.text };
   const pageText = { ...page.text };
   const images = { ...state.images };
@@ -355,8 +582,8 @@ const collectPersonalizationState = () => {
     const id = getEditableId(element, index);
     const rect = element.getBoundingClientRect();
     pageLayout[id] = {
-      x: 0,
-      y: 0,
+      x: Math.round(element.offsetLeft || 0),
+      y: Math.round(element.offsetTop || 0),
       width: Math.round(rect.width),
       height: Math.round(rect.height),
       order: Number.parseInt(element.style.order || "", 10) || index + 1,
@@ -364,7 +591,7 @@ const collectPersonalizationState = () => {
     };
   });
 
-  state.version = 2;
+  state.version = 3;
   state.text = globalText;
   state.images = images;
   state.lists = lists;
@@ -373,6 +600,7 @@ const collectPersonalizationState = () => {
     text: pageText,
     layout: pageLayout,
     windows: page.windows || [],
+    bubbles: collectTextBubbleState(),
   };
   state.updatedAt = new Date().toISOString();
   personalizationState = state;
@@ -400,7 +628,7 @@ const createDeveloperModeIndicator = () => {
   indicator = document.createElement("div");
   indicator.className = "developer-mode-indicator";
   indicator.setAttribute("role", "status");
-  indicator.innerHTML = `<strong>Developer Mode Active</strong><span>Drag cards into clean slots, resize, edit text, change fonts, and upload images.</span>`;
+  indicator.innerHTML = `<strong>Developer Mode Active</strong><span>Drag cards freely, resize, add text bubbles, change fonts, and upload images.</span>`;
   document.body.append(indicator);
   return indicator;
 };
@@ -482,6 +710,144 @@ const createFontSelect = (element) => {
   return select;
 };
 
+const createBubbleFontSelect = (bubble) => {
+  const select = createFontSelect(bubble);
+  select.title = "Change this text bubble font";
+  return select;
+};
+
+const renderTextBubbles = (parent, bubbles = []) => {
+  parent.querySelectorAll(":scope > .developer-text-bubble").forEach((bubble) => bubble.remove());
+  bubbles.forEach((bubbleState) => {
+    const bubble = document.createElement("div");
+    bubble.className = "developer-text-bubble";
+    bubble.dataset.bubbleId = bubbleState.id || `bubble-${Date.now()}`;
+    bubble.setAttribute("contenteditable", String(developerModeEnabled));
+    bubble.innerHTML = bubbleState.text || "Text bubble";
+    bubble.style.left = `${Number.isFinite(bubbleState.x) ? bubbleState.x : 12}px`;
+    bubble.style.top = `${Number.isFinite(bubbleState.y) ? bubbleState.y : 12}px`;
+    bubble.style.width = `${Math.max(MIN_BUBBLE_WIDTH, bubbleState.width || 160)}px`;
+    bubble.style.height = `${Math.max(MIN_BUBBLE_HEIGHT, bubbleState.height || 70)}px`;
+    if (bubbleState.fontFamily !== undefined) bubble.style.fontFamily = bubbleState.fontFamily;
+    bubble.addEventListener("blur", handleEditableTextBlur);
+    bubble.addEventListener("keydown", handleEditableTextKeydown);
+    setupTextBubbleDrag(bubble);
+    parent.append(bubble);
+  });
+};
+
+const collectTextBubbleState = () => {
+  const bubbles = {};
+  getEditableLayoutItems().forEach((parent, index) => {
+    const parentId = getEditableId(parent, index);
+    const parentBubbles = Array.from(parent.querySelectorAll(":scope > .developer-text-bubble")).map((bubble) => {
+      const clone = bubble.cloneNode(true);
+      clone.querySelectorAll(".developer-bubble-controls").forEach((control) => control.remove());
+      return {
+        id: bubble.dataset.bubbleId,
+        x: Math.round(bubble.offsetLeft || 0),
+        y: Math.round(bubble.offsetTop || 0),
+        width: Math.round(bubble.offsetWidth || MIN_BUBBLE_WIDTH),
+        height: Math.round(bubble.offsetHeight || MIN_BUBBLE_HEIGHT),
+        text: clone.innerHTML.trim() || "Text bubble",
+        fontFamily: bubble.style.fontFamily || "",
+      };
+    });
+    if (parentBubbles.length) bubbles[parentId] = parentBubbles;
+  });
+  return bubbles;
+};
+
+const addTextBubble = (parent) => {
+  const state = collectPersonalizationState();
+  const parentId = getEditableId(parent);
+  const page = state.pages[pageKey];
+  const existing = page.bubbles[parentId] || [];
+  existing.push({
+    id: `${parentId}:bubble-${Date.now()}`,
+    x: 16,
+    y: 56,
+    width: 170,
+    height: 72,
+    text: "New text bubble",
+    fontFamily: "",
+  });
+  page.bubbles[parentId] = existing;
+  personalizationState = state;
+  saveStateObject(state);
+  renderTextBubbles(parent, existing);
+  setDeveloperMode(true);
+};
+
+const deleteTextBubble = (bubble) => {
+  const parent = bubble.closest(".developer-editable");
+  bubble.remove();
+  const state = collectPersonalizationState();
+  if (parent) renderTextBubbles(parent, state.pages?.[pageKey]?.bubbles?.[getEditableId(parent)] || []);
+  personalizationState = state;
+  saveStateObject(state);
+  setDeveloperMode(true);
+};
+
+const setupTextBubbleDrag = (bubble) => {
+  if (bubble.dataset.bubbleReady === "true") return;
+  bubble.dataset.bubbleReady = "true";
+  bubble.addEventListener("pointerdown", (event) => {
+    if (!developerModeEnabled || event.target.closest(".developer-bubble-controls, button, select")) return;
+    if (event.offsetX > bubble.clientWidth - 18 && event.offsetY > bubble.clientHeight - 18) return;
+    event.preventDefault();
+    const parent = bubble.parentElement;
+    activeBubbleDrag = {
+      bubble,
+      parent,
+      dx: event.clientX - bubble.offsetLeft,
+      dy: event.clientY - bubble.offsetTop,
+    };
+    bubble.setPointerCapture?.(event.pointerId);
+  });
+};
+
+document.addEventListener("pointermove", (event) => {
+  if (!activeBubbleDrag) return;
+  const { bubble, parent, dx, dy } = activeBubbleDrag;
+  const rect = clampToContainer({
+    x: snapToGrid(event.clientX - dx),
+    y: snapToGrid(event.clientY - dy),
+    width: bubble.offsetWidth,
+    height: bubble.offsetHeight,
+  }, parent, MIN_BUBBLE_WIDTH, MIN_BUBBLE_HEIGHT);
+  bubble.style.left = `${rect.x}px`;
+  bubble.style.top = `${rect.y}px`;
+});
+
+document.addEventListener("pointerup", () => {
+  if (activeBubbleDrag) {
+    activeBubbleDrag = null;
+    savePersonalizationState();
+  }
+});
+
+const addTextBubbleControls = () => {
+  document.querySelectorAll(".developer-text-bubble").forEach((bubble) => {
+    bubble.setAttribute("contenteditable", String(developerModeEnabled));
+    if (!developerModeEnabled) return;
+    if (bubble.querySelector(":scope > .developer-bubble-controls")) return;
+    const controls = document.createElement("div");
+    controls.className = "developer-bubble-controls";
+    controls.setAttribute("contenteditable", "false");
+    controls.append(
+      createControlButton("Delete", "Delete this text bubble", () => deleteTextBubble(bubble)),
+      createBubbleFontSelect(bubble),
+    );
+    bubble.prepend(controls);
+  });
+};
+
+const removeTextBubbleControls = () => {
+  document.querySelectorAll(".developer-bubble-controls").forEach((control) => control.remove());
+  document.querySelectorAll(".developer-text-bubble").forEach((bubble) => bubble.setAttribute("contenteditable", "false"));
+};
+
 const getSiblingLayoutItems = (element) => {
   const parent = element.parentElement;
   if (!parent) {
@@ -515,19 +881,13 @@ const moveEditableItem = (element, direction) => {
   target.style.order = currentOrder;
 };
 
-const snapEditableItemToSlot = (dragged, target) => {
-  if (!dragged || !target || dragged === target) {
-    return;
-  }
-  const siblings = getSiblingLayoutItems(target);
-  if (!siblings.includes(dragged)) {
-    return;
-  }
-  normalizeSiblingOrders(siblings);
-  const draggedOrder = dragged.style.order;
-  dragged.style.order = target.style.order;
-  target.style.order = draggedOrder;
-  savePersonalizationState();
+const settleEditableItem = (element, candidate) => {
+  const container = getLayoutContainer(element);
+  if (!container) return;
+  ensureFreeLayoutContainer(container);
+  const clamped = clampToContainer(candidate, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
+  const rect = findNearestNonOverlappingPosition(clamped, getSiblingRects(element), container);
+  applyLayoutRect(element, rect);
 };
 
 const setupDragHandlers = (element) => {
@@ -536,53 +896,81 @@ const setupDragHandlers = (element) => {
   }
   element.dataset.dragReady = "true";
 
-  element.addEventListener("dragstart", (event) => {
-    if (!developerModeEnabled) {
-      event.preventDefault();
+  element.addEventListener("pointerdown", (event) => {
+    if (!developerModeEnabled || event.target.closest(".developer-controls, .developer-text-bubble, [contenteditable='true'], button, input, textarea, select, label")) {
       return;
     }
-    draggedEditableItem = element;
-    element.classList.add("developer-editable--dragging");
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", getEditableId(element));
-  });
-
-  element.addEventListener("dragover", (event) => {
-    if (!developerModeEnabled || !draggedEditableItem) {
+    if (event.offsetX > element.clientWidth - 22 && event.offsetY > element.clientHeight - 22) {
       return;
     }
-    if (getSiblingLayoutItems(element).includes(draggedEditableItem)) {
-      event.preventDefault();
-      element.classList.add("developer-editable--drop-target");
-    }
-  });
-
-  element.addEventListener("dragleave", () => {
-    element.classList.remove("developer-editable--drop-target");
-  });
-
-  element.addEventListener("drop", (event) => {
-    if (!developerModeEnabled) {
-      return;
-    }
+    const container = getLayoutContainer(element);
+    if (!container) return;
+    ensureFreeLayoutContainer(container);
     event.preventDefault();
-    element.classList.remove("developer-editable--drop-target");
-    snapEditableItemToSlot(draggedEditableItem, element);
+    activeLayoutDrag = {
+      element,
+      container,
+      dx: event.clientX - element.offsetLeft,
+      dy: event.clientY - element.offsetTop,
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+    };
+    element.classList.add("developer-editable--dragging");
+    element.setPointerCapture?.(event.pointerId);
   });
 
-  element.addEventListener("dragend", () => {
-    element.classList.remove("developer-editable--dragging");
-    document.querySelectorAll(".developer-editable--drop-target").forEach((item) => item.classList.remove("developer-editable--drop-target"));
-    draggedEditableItem = null;
+  element.addEventListener("mouseup", () => {
+    if (developerModeEnabled) {
+      const container = getLayoutContainer(element);
+      if (container) {
+        settleEditableItem(element, { ...rectFromElement(element), width: element.offsetWidth, height: element.offsetHeight });
+        savePersonalizationState();
+      }
+    }
   });
 };
+
+document.addEventListener("pointermove", (event) => {
+  if (!activeLayoutDrag) return;
+  const { element, container, dx, dy, width, height } = activeLayoutDrag;
+  const rect = clampToContainer({
+    x: snapToGrid(event.clientX - dx),
+    y: snapToGrid(event.clientY - dy),
+    width,
+    height,
+  }, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
+  applyLayoutRect(element, rect);
+});
+
+document.addEventListener("pointerup", () => {
+  if (!activeLayoutDrag) return;
+  const { element } = activeLayoutDrag;
+  element.classList.remove("developer-editable--dragging");
+  settleEditableItem(element, rectFromElement(element));
+  activeLayoutDrag = null;
+  savePersonalizationState();
+});
 
 const initializeEditableLayoutItems = () => {
   getEditableLayoutItems().forEach((element, index) => {
     getEditableId(element, index);
     element.classList.add("developer-editable");
-    element.draggable = developerModeEnabled;
+    element.draggable = false;
     setupDragHandlers(element);
+    if (developerModeEnabled) {
+      const container = getLayoutContainer(element);
+      ensureFreeLayoutContainer(container);
+      element.classList.add("developer-free-layout-item");
+      const current = rectFromElement(element);
+      if (!Number.isFinite(current.x) || (!element.style.left && element.dataset.flowX)) {
+        applyLayoutRect(element, {
+          x: Number(element.dataset.flowX || 0),
+          y: Number(element.dataset.flowY || 0),
+          width: element.offsetWidth,
+          height: element.offsetHeight,
+        });
+      }
+    }
   });
 };
 
@@ -591,6 +979,7 @@ const removeCustomWindow = (windowId) => {
   const page = state.pages[pageKey];
   page.windows = (page.windows || []).filter((windowItem) => windowItem.id !== windowId);
   delete page.layout[windowId];
+  delete page.bubbles?.[windowId];
   Object.keys(page.text || {}).forEach((key) => {
     if (key.startsWith(`${windowId}:`)) {
       delete page.text[key];
@@ -621,9 +1010,10 @@ const addDeveloperControls = () => {
     controls.className = "developer-controls";
     controls.setAttribute("contenteditable", "false");
     controls.append(
-      createControlButton("↕ Drag", "Drag this window to snap into another clean slot", () => {}),
+      createControlButton("↕ Drag", "Drag this card freely inside its editable area", () => {}),
       createControlButton("↑", "Move earlier", () => moveEditableItem(element, -1)),
       createControlButton("↓", "Move later", () => moveEditableItem(element, 1)),
+      createControlButton("Add text", "Add a movable text bubble inside this card", () => addTextBubble(element)),
       createControlButton("Reset size", "Clear custom width and height", () => {
         element.style.width = "";
         element.style.height = "";
@@ -803,9 +1193,9 @@ const updateAdminPanelCopy = () => {
         <ul>
           <li>Click highlighted text to edit it; changes save on blur and on exit.</li>
           <li>Click an image or use Upload image to replace it.</li>
-          <li>Drag a card/window onto another card/window to snap into that clean slot.</li>
-          <li>Use the font dropdown on each window to change that window's font.</li>
-          <li>Resize from the lower-right corner, then save before exiting.</li>
+          <li>Drag cards freely inside their editable area; they snap to the grid and avoid overlap.</li>
+          <li>Use Add text to create movable, resizable text bubbles inside a card.</li>
+          <li>Use font dropdowns on cards or bubbles, then save before exiting.</li>
         </ul>
       </div>
       ${buildAddWindowForm()}
@@ -829,7 +1219,10 @@ const setDeveloperMode = (enabled) => {
 
   getEditableLayoutItems().forEach((element) => {
     element.classList.toggle("developer-editable--active", enabled);
-    element.draggable = enabled;
+    if (enabled || (element.style.left && element.style.top)) {
+      element.classList.add("developer-free-layout-item");
+    }
+    element.draggable = false;
   });
 
   const customArea = document.querySelector("[data-developer-window-area]");
@@ -839,9 +1232,12 @@ const setDeveloperMode = (enabled) => {
   }
 
   if (enabled) {
+    applyPanelState();
     addDeveloperControls();
+    addTextBubbleControls();
   } else {
     removeDeveloperControls();
+    removeTextBubbleControls();
   }
 };
 
