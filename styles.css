@@ -978,3 +978,13 @@ body.developer-mode-active .developer-text-editable:focus {
   user-select: text;
   cursor: text;
 }
+
+.developer-card-drag-handle {
+  background: var(--blue-700);
+  color: #fff;
+  cursor: grab;
+}
+
+.developer-card-drag-handle:active {
+  cursor: grabbing;
+}

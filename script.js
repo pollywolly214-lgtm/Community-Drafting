@@ -952,6 +952,26 @@ const settleEditableItem = (element, candidate) => {
   applyLayoutRect(element, rect);
 };
 
+const beginLayoutDrag = (element, event) => {
+  if (!developerModeEnabled || !element) return;
+  const container = getLayoutContainer(element);
+  if (!container) return;
+  ensureFreeLayoutContainer(container);
+  event.preventDefault();
+  event.stopPropagation();
+  const startRect = rectFromElement(element);
+  activeLayoutDrag = {
+    element,
+    container,
+    dx: event.clientX - startRect.x,
+    dy: event.clientY - startRect.y,
+    width: element.offsetWidth,
+    height: element.offsetHeight,
+  };
+  element.classList.add("developer-editable--dragging");
+  element.setPointerCapture?.(event.pointerId);
+};
+
 const setupDragHandlers = (element) => {
   if (element.dataset.dragReady === "true") {
     return;
@@ -965,21 +985,7 @@ const setupDragHandlers = (element) => {
     if (event.offsetX > element.clientWidth - 22 && event.offsetY > element.clientHeight - 22) {
       return;
     }
-    const container = getLayoutContainer(element);
-    if (!container) return;
-    ensureFreeLayoutContainer(container);
-    event.preventDefault();
-    const startRect = rectFromElement(element);
-    activeLayoutDrag = {
-      element,
-      container,
-      dx: event.clientX - startRect.x,
-      dy: event.clientY - startRect.y,
-      width: element.offsetWidth,
-      height: element.offsetHeight,
-    };
-    element.classList.add("developer-editable--dragging");
-    element.setPointerCapture?.(event.pointerId);
+    beginLayoutDrag(element, event);
   });
 
   element.addEventListener("mouseup", () => {
@@ -1072,8 +1078,11 @@ const addDeveloperControls = () => {
     const controls = document.createElement("div");
     controls.className = "developer-controls";
     controls.setAttribute("contenteditable", "false");
+    const dragHandle = createControlButton("↕ Move", "Drag this handle to move the whole card/window", () => {});
+    dragHandle.classList.add("developer-card-drag-handle");
+    dragHandle.addEventListener("pointerdown", (event) => beginLayoutDrag(element, event));
     controls.append(
-      createControlButton("↕ Drag", "Drag this card freely inside its editable area", () => {}),
+      dragHandle,
       createControlButton("↑", "Move earlier", () => moveEditableItem(element, -1)),
       createControlButton("↓", "Move later", () => moveEditableItem(element, 1)),
       createControlButton("Add text", "Add a movable text bubble inside this card", () => addTextBubble(element)),
