@@ -222,12 +222,25 @@ const detectOverlap = (a, b) => !(
   b.y + b.height <= a.y
 );
 
-const rectFromElement = (element) => ({
-  x: element.offsetLeft,
-  y: element.offsetTop,
-  width: element.offsetWidth,
-  height: element.offsetHeight,
-});
+const rectFromElement = (element) => {
+  const container = getLayoutContainer(element);
+  if (container) {
+    const elementRect = element.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    return {
+      x: Math.round(elementRect.left - containerRect.left),
+      y: Math.round(elementRect.top - containerRect.top),
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+    };
+  }
+  return {
+    x: element.offsetLeft,
+    y: element.offsetTop,
+    width: element.offsetWidth,
+    height: element.offsetHeight,
+  };
+};
 
 const getEditableContentMinimumSize = (element) => {
   const currentWidth = element.style.width;
@@ -278,7 +291,7 @@ const findNearestNonOverlappingPosition = (candidate, others, container) => {
   return initial;
 };
 
-const getLayoutContainer = (element) => element.parentElement;
+const getLayoutContainer = () => document.querySelector("main");
 
 const getSiblingRects = (element) => getSiblingLayoutItems(element)
   .filter((item) => item !== element && item.classList.contains("developer-free-layout-item"))
@@ -293,13 +306,13 @@ const applyLayoutRect = (element, rect) => {
 
 const ensureFreeLayoutContainer = (container) => {
   if (!container || container.dataset.freeLayoutReady === "true") return;
-  const children = Array.from(container.children).filter((child) => child.classList?.contains("developer-editable"));
+  const children = Array.from(container.querySelectorAll(".developer-editable"));
   if (children.length < 1) return;
   const containerRect = container.getBoundingClientRect();
   children.forEach((child) => {
     const childRect = child.getBoundingClientRect();
-    child.dataset.flowX = String(Math.max(0, Math.round(childRect.left - containerRect.left + container.scrollLeft)));
-    child.dataset.flowY = String(Math.max(0, Math.round(childRect.top - containerRect.top + container.scrollTop)));
+    child.dataset.flowX = String(Math.max(0, Math.round(childRect.left - containerRect.left)));
+    child.dataset.flowY = String(Math.max(0, Math.round(childRect.top - containerRect.top)));
   });
   container.style.minHeight = `${Math.max(EDITING_CANVAS_MIN_HEIGHT, container.clientHeight, ...children.map((child) => Number(child.dataset.flowY || 0) + child.offsetHeight + EDITING_CANVAS_EDGE_PADDING))}px`;
   container.classList.add("developer-free-layout-container");
@@ -898,11 +911,11 @@ const removeTextBubbleControls = () => {
 };
 
 const getSiblingLayoutItems = (element) => {
-  const parent = element.parentElement;
-  if (!parent) {
+  const container = getLayoutContainer(element);
+  if (!container) {
     return [];
   }
-  return Array.from(parent.children).filter((child) => child.classList?.contains("developer-editable"));
+  return Array.from(container.querySelectorAll(".developer-editable"));
 };
 
 const normalizeSiblingOrders = (siblings) => {
@@ -956,11 +969,12 @@ const setupDragHandlers = (element) => {
     if (!container) return;
     ensureFreeLayoutContainer(container);
     event.preventDefault();
+    const startRect = rectFromElement(element);
     activeLayoutDrag = {
       element,
       container,
-      dx: event.clientX - element.offsetLeft,
-      dy: event.clientY - element.offsetTop,
+      dx: event.clientX - startRect.x,
+      dy: event.clientY - startRect.y,
       width: element.offsetWidth,
       height: element.offsetHeight,
     };
