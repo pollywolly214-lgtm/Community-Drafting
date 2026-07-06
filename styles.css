@@ -74,8 +74,9 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
     linear-gradient(135deg, rgba(63, 132, 197, 0.75), rgba(14, 58, 102, 0.22), rgba(255, 255, 255, 0.9)) border-box;
   border: 1px solid transparent;
   display: grid;
-  grid-template-columns: minmax(250px, auto) minmax(0, 1fr) auto;
-  align-items: center;
+  grid-template-areas: "brand links cta";
+  grid-template-columns: minmax(250px, auto) minmax(0, 1fr) max-content;
+  align-items: start;
   gap: clamp(0.8rem, 2vw, 1.4rem);
   justify-content: space-between;
   position: fixed;
@@ -85,6 +86,7 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
 }
 
 .brand {
+  grid-area: brand;
   display: inline-flex;
   align-items: center;
   gap: 0.95rem;
@@ -111,6 +113,7 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
 }
 
 .nav-links {
+  grid-area: links;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -136,6 +139,12 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
   font-size: 0.92rem;
   font-weight: 700;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.nav-pill,
+.nav-cta {
+  border-radius: 0.25rem;
+  clip-path: polygon(0.7rem 0, 100% 0, calc(100% - 0.7rem) 100%, 0 100%);
 }
 
 .nav-pill,
@@ -177,7 +186,12 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
 }
 
 .nav-cta {
-  padding-inline: 1.35rem;
+  grid-area: cta;
+  justify-self: end;
+  align-self: start;
+  width: max-content;
+  min-height: 2.65rem;
+  padding-inline: 0.95rem;
   white-space: nowrap;
 }
 
@@ -510,15 +524,20 @@ body.admin-active .admin-panel { display: block; }
   }
 
   .nav-bar {
-    grid-template-columns: 1fr;
+    grid-template-areas:
+      "brand cta"
+      "links links";
+    grid-template-columns: minmax(0, 1fr) max-content;
     justify-items: stretch;
+    align-items: start;
   }
 
   .nav-links { justify-content: center; }
 
-  .brand { justify-content: center; }
+  .brand { justify-content: start; }
 
-  .nav-cta,
+  .nav-cta { justify-self: end; }
+
   .settings-dropdown { justify-self: center; }
 
   .nav-dropdown-menu {
