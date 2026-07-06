@@ -595,12 +595,6 @@ const applyPersonalizationState = (state) => {
       element.style.fontFamily = layout.fontFamily;
     }
     renderTextBubbles(element, state.pages?.[pageKey]?.bubbles?.[id] || []);
-    if (Number.isFinite(layout.x) && Number.isFinite(layout.y)) {
-      const container = getLayoutContainer(element);
-      if (container) {
-        applyLayoutRect(element, normalizeEditableRect(element, rectFromElement(element), container));
-      }
-    }
   });
 };
 
@@ -875,8 +869,8 @@ document.addEventListener("pointermove", (event) => {
   if (!activeBubbleDrag) return;
   const { bubble, parent, dx, dy } = activeBubbleDrag;
   const rect = clampToContainer({
-    x: snapToGrid(event.clientX - dx),
-    y: snapToGrid(event.clientY - dy),
+    x: event.clientX - dx,
+    y: event.clientY - dy,
     width: bubble.offsetWidth,
     height: bubble.offsetHeight,
   }, parent, MIN_BUBBLE_WIDTH, MIN_BUBBLE_HEIGHT);
@@ -949,9 +943,7 @@ const settleEditableItem = (element, candidate) => {
   const container = getLayoutContainer(element);
   if (!container) return;
   ensureFreeLayoutContainer(container);
-  const clamped = normalizeEditableRect(element, candidate, container);
-  const rect = findNearestNonOverlappingPosition(clamped, getSiblingRects(element), container);
-  applyLayoutRect(element, rect);
+  applyLayoutRect(element, clampToContainer(candidate, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT));
 };
 
 const beginLayoutDrag = (element, event) => {
@@ -1005,8 +997,8 @@ document.addEventListener("pointermove", (event) => {
   if (!activeLayoutDrag) return;
   const { element, container, dx, dy, width, height } = activeLayoutDrag;
   const rect = clampToContainer({
-    x: snapToGrid(event.clientX - dx),
-    y: snapToGrid(event.clientY - dy),
+    x: event.clientX - dx,
+    y: event.clientY - dy,
     width,
     height,
   }, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
@@ -1087,7 +1079,6 @@ const addDeveloperControls = () => {
       dragHandle,
       createControlButton("↑", "Move earlier", () => moveEditableItem(element, -1)),
       createControlButton("↓", "Move later", () => moveEditableItem(element, 1)),
-      createControlButton("Add text", "Add a movable text bubble inside this card", () => addTextBubble(element)),
       createControlButton("Fit content", "Grow this card so its contents fit cleanly", () => {
         const container = getLayoutContainer(element);
         if (container) {
@@ -1187,7 +1178,7 @@ document.addEventListener("pointermove", (event) => {
   if (!activeTextDrag.moved && Math.hypot(dx, dy) < 5) return;
   activeTextDrag.moved = true;
   event.preventDefault();
-  moveTextNode(activeTextDrag.node, snapToGrid(activeTextDrag.startX + dx), snapToGrid(activeTextDrag.startY + dy));
+  moveTextNode(activeTextDrag.node, activeTextDrag.startX + dx, activeTextDrag.startY + dy);
 });
 
 document.addEventListener("pointerup", () => {
@@ -1201,7 +1192,6 @@ const setEditableTextMode = (enabled) => {
   getEditableTextNodes().forEach((node) => {
     node.setAttribute("contenteditable", String(enabled));
     node.classList.toggle("developer-text-editable", enabled);
-    if (enabled) setupMovableTextNode(node);
     if (node.dataset.textHandlersReady !== "true") {
       node.dataset.textHandlersReady = "true";
       node.addEventListener("blur", handleEditableTextBlur);
@@ -1325,10 +1315,9 @@ const updateAdminPanelCopy = () => {
         <ul>
           <li>Click highlighted text to edit it; changes save on blur and on exit.</li>
           <li>Click an image or use Upload image to replace it.</li>
-          <li>Drag cards freely inside their editable area; they snap to the grid and avoid overlap.</li>
-          <li>Drag existing text to reposition it, or double-click/click into text to edit it.</li>
-          <li>Use Add text to create movable, resizable text bubbles inside a card.</li>
-          <li>Use font dropdowns on cards or bubbles, then save before exiting.</li>
+          <li>Click text to edit it directly.</li>
+          <li>Use the Move handle to drag cards/windows; resize from the lower-right corner.</li>
+          <li>Use font dropdowns on cards, then save before exiting.</li>
         </ul>
       </div>
       ${buildAddWindowForm()}

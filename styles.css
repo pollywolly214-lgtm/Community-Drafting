@@ -988,3 +988,17 @@ body.developer-mode-active .developer-text-editable:focus {
 .developer-card-drag-handle:active {
   cursor: grabbing;
 }
+
+/* Simplified Developer Mode: keep movement plain and predictable. */
+body.developer-mode-active .developer-free-layout-container {
+  background-image: none;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+}
+
+body.developer-mode-active .developer-text-editable {
+  touch-action: auto;
+  user-select: text;
+  cursor: text;
+}
