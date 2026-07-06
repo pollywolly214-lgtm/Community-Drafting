@@ -459,16 +459,18 @@ main { padding-bottom: 2.5rem; }
 /* Admin */
 .admin-panel {
   position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  width: min(430px, calc(100% - 2rem));
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: min(430px, calc(100vw - 2rem));
+  max-height: min(80vh, calc(100vh - 2rem));
+  overflow: auto;
   padding: 0.8rem;
   border-radius: 1rem;
   border: 1px solid var(--line);
   background: var(--white);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   display: none;
-  z-index: 30;
+  z-index: 100;
 }
 
 body.admin-active .admin-panel { display: block; }
@@ -483,7 +485,7 @@ body.admin-active .admin-panel { display: block; }
 
 .admin-panel__body {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.7rem;
 }
 
@@ -801,5 +803,36 @@ body.developer-mode-active .developer-editable--active[draggable="true"]:active 
 
   .developer-window-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Barebones Developer Mode: text editing only */
+body.developer-mode-active .admin-panel {
+  display: block;
+}
+
+body.developer-mode-active .developer-text-editable {
+  cursor: text;
+  border-radius: 0.35rem;
+  background: rgba(255, 245, 235, 0.62);
+  box-shadow: 0 0 0 2px rgba(255, 138, 91, 0.42);
+}
+
+body.developer-mode-active .developer-text-editable:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 138, 91, 0.75);
+  outline: none;
+}
+
+body.developer-mode-active .developer-controls,
+body.developer-mode-active .developer-mode-indicator {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  body.developer-mode-active .admin-panel {
+    inset: auto 0.7rem 0.7rem 0.7rem;
+    width: auto;
+    max-height: calc(100vh - 1.4rem);
   }
 }
