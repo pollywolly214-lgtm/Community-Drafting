@@ -293,8 +293,10 @@ const findNearestNonOverlappingPosition = (candidate, others, container) => {
 
 const getLayoutContainer = () => document.querySelector("main");
 
+const isRelatedEditableItem = (item, element) => item === element || item.contains(element) || element.contains(item);
+
 const getSiblingRects = (element) => getSiblingLayoutItems(element)
-  .filter((item) => item !== element && item.classList.contains("developer-free-layout-item"))
+  .filter((item) => !isRelatedEditableItem(item, element) && item.classList.contains("developer-free-layout-item"))
   .map(rectFromElement);
 
 const applyLayoutRect = (element, rect) => {
