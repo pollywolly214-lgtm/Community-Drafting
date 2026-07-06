@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="title desc">
+  <title id="title">3D printed prototype sample</title>
+  <desc id="desc">Clean 3D printer illustration actively printing a simple prototype part on the build plate.</desc>
+  <rect width="720" height="460" rx="28" fill="#f8fbff"/>
+  <rect x="120" y="88" width="480" height="276" rx="16" fill="#ffffff" stroke="#12375f" stroke-width="7"/>
+
+  <g stroke="#0e3a66" stroke-width="8" stroke-linecap="round" fill="none">
+    <path d="M174 148h372"/>
+    <path d="M206 148v152M514 148v152"/>
+    <path d="M228 322h264"/>
+  </g>
+
+  <rect x="282" y="124" width="156" height="56" rx="8" fill="#3f84c5"/>
+  <path d="M324 180h72l-16 34h-40z" fill="#12375f"/>
+  <path d="M360 214v34" stroke="#12375f" stroke-width="6" stroke-linecap="round"/>
+
+  <g stroke-linejoin="round">
+    <path d="M264 318h192l34 38H230z" fill="#dcecff" stroke="#0e3a66" stroke-width="6"/>
+    <path d="M304 282h112l28 36H276z" fill="#5a9ad6" stroke="#0e3a66" stroke-width="5"/>
+    <path d="M328 246h64l24 36H304z" fill="#2a63a2" stroke="#0e3a66" stroke-width="5"/>
+    <circle cx="326" cy="300" r="12" fill="#ffffff" stroke="#12375f" stroke-width="5"/>
+    <circle cx="394" cy="300" r="12" fill="#ffffff" stroke="#12375f" stroke-width="5"/>
+  </g>
+
+  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round">
+    <path d="M284 338h152M298 348h124M314 358h92"/>
+  </g>
+  <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">prototype print</text>
+</svg>

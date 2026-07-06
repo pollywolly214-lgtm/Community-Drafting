@@ -40,6 +40,21 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+
+const markCurrentNavigation = () => {
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".nav-pill[href], .nav-cta[href]").forEach((link) => {
+    const linkPage = link.getAttribute("href").split("#")[0].split("?")[0] || "index.html";
+
+    if (linkPage === currentPage) {
+      link.classList.add("is-active");
+      link.setAttribute("aria-current", "page");
+    }
+  });
+};
+
+markCurrentNavigation();
+
 const DEVELOPER_PASSWORD = "abc";
 const PERSONALIZATION_STORAGE_KEY = "draftingSitePersonalizationV1";
 const DEVELOPER_SESSION_KEY = "draftingSiteDeveloperModeActive";
@@ -416,8 +431,8 @@ const createSettingsMenu = () => {
   settingsDropdown.innerHTML = `
     <button class="nav-pill nav-pill--button settings-button" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Open settings menu">⚙ Settings</button>
     <div class="nav-dropdown-menu gradient-border settings-menu">
-      <button class="settings-menu__item" id="developer-mode-toggle" type="button">Developer Mode</button>
-      <p class="settings-menu__note">Personalization saves locally in this browser.</p>
+      <button class="settings-menu__item" id="developer-mode-toggle" type="button">Open Developer Mode</button>
+      <p class="settings-menu__note">Developer tools stay closed until you open them.</p>
     </div>
   `;
 
@@ -435,7 +450,8 @@ const createSettingsMenu = () => {
     }
   });
 
-  settingsDropdown.querySelector("#developer-mode-toggle").addEventListener("click", (event) => {
+  const developerToggle = settingsDropdown.querySelector("#developer-mode-toggle");
+  developerToggle.addEventListener("click", (event) => {
     event.stopPropagation();
     settingsDropdown.classList.remove("is-open");
     button.setAttribute("aria-expanded", "false");
@@ -817,10 +833,19 @@ const updateAdminPanelCopy = () => {
   }
 };
 
+const updateDeveloperToggleLabel = () => {
+  const toggle = document.getElementById("developer-mode-toggle");
+  if (toggle) {
+    toggle.textContent = developerModeEnabled ? "Save & Close Developer Mode" : "Open Developer Mode";
+  }
+};
+
 const setDeveloperMode = (enabled) => {
   developerModeEnabled = enabled;
   document.body.classList.toggle(DEVELOPER_BODY_CLASS, enabled);
+  document.body.classList.remove("admin-active");
   adminPanel?.setAttribute("aria-hidden", String(!enabled));
+  updateDeveloperToggleLabel();
   createDeveloperModeIndicator();
   renderCustomWindows(personalizationState || normalizePersonalizationState());
   initializeEditableLayoutItems();
@@ -918,10 +943,9 @@ document.addEventListener("keydown", (event) => {
 });
 
 createSettingsMenu();
+sessionStorage.removeItem(DEVELOPER_SESSION_KEY);
 personalizationState = loadPersonalizationState();
 renderCustomWindows(personalizationState);
 initializeEditableLayoutItems();
 applyPersonalizationState(personalizationState);
-if (sessionStorage.getItem(DEVELOPER_SESSION_KEY) === "true") {
-  setDeveloperMode(true);
-}
+setDeveloperMode(false);
