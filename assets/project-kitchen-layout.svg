@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="title desc">
+  <title id="title">Residential layout drafting sample</title>
+  <desc id="desc">Stylized drafting board with a residential floor plan, measurements, and blue accents.</desc>
+  <rect width="720" height="460" rx="28" fill="#f8fbff"/>
+  <rect x="58" y="52" width="604" height="356" rx="18" fill="#ffffff" stroke="#12375f" stroke-width="4"/>
+  <path d="M144 124h190v92h116v128H144z" fill="#e8f2ff" stroke="#0e3a66" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M334 124v92M144 216h190M450 216h118M450 344h118" stroke="#0e3a66" stroke-width="6" stroke-linecap="round"/>
+  <path d="M198 216c0 42 28 68 68 68" fill="none" stroke="#3f84c5" stroke-width="5"/>
+  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round">
+    <path d="M118 96h484M118 380h484M100 116v244M620 116v244"/>
+    <path d="M118 96l-18 18M602 96l18 18M118 380l-18-18M602 380l18-18"/>
+  </g>
+  <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">measured plan</text>
+</svg>

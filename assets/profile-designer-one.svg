@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360" role="img" aria-labelledby="title desc">
+  <title id="title">Lead designer placeholder portrait</title>
+  <desc id="desc">Illustrated profile portrait for the lead designer.</desc>
+  <rect width="360" height="360" rx="32" fill="#f8fbff"/>
+  <circle cx="180" cy="134" r="70" fill="#d7dde6" stroke="#12375f" stroke-width="8"/>
+  <path d="M82 322c18-72 70-110 98-110s80 38 98 110" fill="#3f84c5" stroke="#12375f" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M126 126c34-42 78-42 108 0" fill="none" stroke="#343434" stroke-width="10" stroke-linecap="round"/>
+</svg>

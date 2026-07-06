@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="title desc">
+  <title id="title">Custom product modeling sample</title>
+  <desc id="desc">Stylized 3D product model with dimension guides.</desc>
+  <rect width="720" height="460" rx="28" fill="#f8fbff"/>
+  <g transform="translate(190 96)">
+    <path d="M170 0l170 86v184l-170 86L0 270V86z" fill="#dcecff" stroke="#12375f" stroke-width="5"/>
+    <path d="M170 0v172l170 98M170 172L0 270M170 172L340 86" fill="none" stroke="#0e3a66" stroke-width="5"/>
+    <path d="M64 118l106-54 106 54-106 54z" fill="#3f84c5" opacity="0.85"/>
+    <path d="M64 118v92l106 54 106-54v-92" fill="#2a63a2" opacity="0.75"/>
+  </g>
+  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round">
+    <path d="M136 86v286M584 86v286M154 72h412"/>
+    <path d="M136 86l18-14M584 86l-18-14M136 372l18 14M584 372l-18 14"/>
+  </g>
+  <text x="86" y="238" transform="rotate(-90 86 238)" font-family="Calibri, Arial, sans-serif" font-size="24" font-weight="700" fill="#343434">height</text>
+  <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">fabrication model</text>
+</svg>
