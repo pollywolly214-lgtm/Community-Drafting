@@ -764,3 +764,241 @@ body.developer-mode-active .developer-editable--active[draggable="true"]:active 
     grid-template-columns: 1fr;
   }
 }
+
+/* Stable floating Developer Mode panel */
+.admin-panel {
+  max-width: min(430px, calc(100vw - 1rem));
+  max-height: calc(100vh - 1rem);
+  overflow: auto;
+}
+
+body.developer-mode-active .admin-panel {
+  display: block;
+  left: 1rem;
+  top: 1rem;
+  right: auto;
+  bottom: auto;
+}
+
+.admin-panel__drag-handle {
+  cursor: move;
+  position: sticky;
+  top: -0.8rem;
+  z-index: 3;
+  margin: -0.8rem -0.8rem 0.75rem;
+  padding: 0.8rem;
+  border-radius: 1rem 1rem 0.6rem 0.6rem;
+  background: linear-gradient(135deg, #ffffff, #eef5ff);
+  border-bottom: 1px solid rgba(116, 151, 198, 0.28);
+}
+
+.admin-panel__utility {
+  font-size: 0.72rem;
+  padding: 0.42rem 0.55rem;
+}
+
+.admin-panel--collapsed {
+  overflow: hidden;
+}
+
+.admin-panel--collapsed .admin-panel__body,
+.admin-panel--collapsed .admin-footer {
+  display: none;
+}
+
+.admin-panel--collapsed .admin-panel__header {
+  margin-bottom: -0.8rem;
+}
+
+.admin-actions {
+  flex-wrap: wrap;
+}
+
+/* Freeform card/window layout in Developer Mode */
+.developer-free-layout-container {
+  position: relative;
+  min-height: 320px;
+}
+
+.developer-free-layout-item {
+  position: absolute !important;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+body.developer-mode-active .developer-free-layout-item {
+  resize: both;
+  overflow: auto;
+  cursor: grab;
+}
+
+body.developer-mode-active .developer-free-layout-item:active {
+  cursor: grabbing;
+}
+
+body.developer-mode-active .developer-free-layout-container {
+  background-image:
+    linear-gradient(rgba(111, 124, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 124, 255, 0.08) 1px, transparent 1px);
+  background-size: 12px 12px;
+  border-radius: 1rem;
+}
+
+/* Canva-lite text bubbles */
+.developer-text-bubble {
+  position: absolute;
+  z-index: 4;
+  box-sizing: border-box;
+  min-width: 90px;
+  min-height: 44px;
+  padding: 0.6rem;
+  border: 1px solid rgba(86, 117, 160, 0.32);
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 24px rgba(12, 31, 53, 0.13);
+  color: var(--slate-900);
+  overflow: auto;
+}
+
+body.developer-mode-active .developer-text-bubble {
+  resize: both;
+  cursor: move;
+  outline: 2px dashed rgba(255, 138, 91, 0.62);
+  outline-offset: 2px;
+}
+
+body:not(.developer-mode-active) .developer-text-bubble {
+  pointer-events: none;
+}
+
+.developer-bubble-controls {
+  display: none;
+}
+
+body.developer-mode-active .developer-bubble-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+  margin: -0.25rem -0.25rem 0.45rem;
+  padding: 0.25rem;
+  border-radius: 0.55rem;
+  background: rgba(238, 244, 252, 0.95);
+  cursor: default;
+}
+
+@media (max-width: 640px) {
+  body.developer-mode-active .admin-panel {
+    width: calc(100vw - 1rem);
+    max-height: min(72vh, 620px);
+  }
+
+  .developer-free-layout-container {
+    min-height: auto !important;
+  }
+
+  .developer-free-layout-item {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: auto !important;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Follow-up Developer Mode usability adjustments */
+body.developer-mode-active .developer-free-layout-container {
+  min-height: 720px;
+  padding: 0.75rem;
+  border: 2px dashed rgba(111, 124, 255, 0.32);
+  box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.16);
+}
+
+body.developer-mode-active .developer-free-layout-container::before {
+  content: "Editable canvas — drag cards anywhere in this bordered area";
+  position: absolute;
+  right: 0.75rem;
+  top: 0.45rem;
+  z-index: 1;
+  max-width: min(360px, calc(100% - 1.5rem));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--slate-500);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.32rem 0.58rem;
+  pointer-events: none;
+}
+
+body.developer-mode-active .developer-free-layout-item {
+  min-width: 180px;
+  min-height: 120px;
+  scrollbar-gutter: stable;
+}
+
+body:not(.developer-mode-active) .developer-free-layout-item {
+  overflow: hidden;
+}
+
+body.developer-mode-active .developer-editable--active :is(h1, h2, h3, h4, p, figcaption, li, span[data-admin-key]) {
+  position: relative;
+  z-index: 2;
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.12rem;
+}
+
+body.developer-mode-active .developer-editable--active :is(h1, h2, h3, h4, p, figcaption, li, span[data-admin-key]):hover {
+  background: rgba(255, 245, 235, 0.74);
+}
+
+body.developer-mode-active .developer-controls {
+  z-index: 6;
+}
+
+/* Keep the freeform editor open-ended instead of boxed-in. */
+body.developer-mode-active .developer-free-layout-container {
+  border: 0;
+  box-shadow: none;
+  outline: 1px solid rgba(111, 124, 255, 0.08);
+  outline-offset: 0.35rem;
+}
+
+body.developer-mode-active .developer-free-layout-container::before {
+  content: none;
+}
+
+body.developer-mode-active .developer-text-editable {
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+body.developer-mode-active .developer-text-editable:focus {
+  user-select: text;
+  cursor: text;
+}
+
+.developer-card-drag-handle {
+  background: var(--blue-700);
+  color: #fff;
+  cursor: grab;
+}
+
+.developer-card-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Simplified Developer Mode: keep movement plain and predictable. */
+body.developer-mode-active .developer-free-layout-container {
+  background-image: none;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+}
+
+body.developer-mode-active .developer-text-editable {
+  touch-action: auto;
+  user-select: text;
+  cursor: text;
+}
