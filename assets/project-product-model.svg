@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="title desc">
   <title id="title">Custom product modeling sample</title>
-  <desc id="desc">Clean stylized 3D product model with aligned edges, shaded faces, and dimension guides.</desc>
+  <desc id="desc">Clean stylized 3D product model with aligned edges and shaded faces.</desc>
   <rect width="720" height="460" rx="28" fill="#f8fbff"/>
   <rect x="96" y="76" width="528" height="304" rx="18" fill="#ffffff" stroke="#c9d6e6" stroke-width="3"/>
 
@@ -13,12 +13,9 @@
     <path d="M75 118l75 42 75-42M75 200l75 42 75-42" fill="none" stroke="#12375f" stroke-width="3" opacity="0.55"/>
   </g>
 
-  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round" fill="none">
-    <path d="M160 88v292M560 88v292M178 66h364"/>
-    <path d="M160 88l18-22M560 88l-18-22M160 380l18 22M560 380l-18 22"/>
-    <path d="M178 66l18-10M178 66l18 10M542 66l-18-10M542 66l-18 10"/>
+  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.75">
+    <path d="M210 330h300"/>
+    <path d="M238 344h244"/>
   </g>
-  <text x="360" y="52" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="22" font-weight="700" fill="#343434">model width</text>
-  <text x="126" y="234" transform="rotate(-90 126 234)" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="22" font-weight="700" fill="#343434">height</text>
-  <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">fabrication model</text>
+  <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">model</text>
 </svg>

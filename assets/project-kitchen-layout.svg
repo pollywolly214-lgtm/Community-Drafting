@@ -23,7 +23,5 @@
     <path d="M16 24h38M16 48h26M16 72h38M16 96h26M16 120h38M16 144h26"/>
   </g>
 
-  <text x="320" y="104" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="20" font-weight="700" fill="#343434">12 ft 4 in</text>
-  <text x="92" y="238" transform="rotate(-90 92 238)" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="20" font-weight="700" fill="#343434">8 ft 0 in</text>
   <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">measured plan</text>
 </svg>
