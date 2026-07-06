@@ -74,8 +74,8 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
     linear-gradient(135deg, rgba(63, 132, 197, 0.75), rgba(14, 58, 102, 0.22), rgba(255, 255, 255, 0.9)) border-box;
   border: 1px solid transparent;
   display: grid;
-  grid-template-areas: "brand links cta";
-  grid-template-columns: minmax(250px, auto) minmax(0, 1fr) max-content;
+  grid-template-areas: "brand links settings cta";
+  grid-template-columns: minmax(250px, auto) minmax(0, 1fr) max-content max-content;
   align-items: start;
   gap: clamp(0.8rem, 2vw, 1.4rem);
   justify-content: space-between;
@@ -117,7 +117,7 @@ main { padding-inline: clamp(1rem, 3vw, 2.6rem); }
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
 }
 
@@ -525,20 +525,22 @@ body.admin-active .admin-panel { display: block; }
 
   .nav-bar {
     grid-template-areas:
-      "brand cta"
-      "links links";
-    grid-template-columns: minmax(0, 1fr) max-content;
+      "brand settings cta"
+      "links links links";
+    grid-template-columns: minmax(0, 1fr) max-content max-content;
     justify-items: stretch;
     align-items: start;
   }
 
-  .nav-links { justify-content: center; }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
   .brand { justify-content: start; }
 
-  .nav-cta { justify-self: end; }
-
-  .settings-dropdown { justify-self: center; }
+  .nav-cta,
+  .settings-dropdown { justify-self: end; }
 
   .nav-dropdown-menu {
     left: 50%;
@@ -551,6 +553,9 @@ body.admin-active .admin-panel { display: block; }
 
 /* Developer Mode personalization */
 .settings-dropdown {
+  grid-area: settings;
+  justify-self: end;
+  align-self: start;
   position: relative;
 }
 
