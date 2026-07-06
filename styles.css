@@ -955,3 +955,26 @@ body.developer-mode-active .developer-editable--active :is(h1, h2, h3, h4, p, fi
 body.developer-mode-active .developer-controls {
   z-index: 6;
 }
+
+/* Keep the freeform editor open-ended instead of boxed-in. */
+body.developer-mode-active .developer-free-layout-container {
+  border: 0;
+  box-shadow: none;
+  outline: 1px solid rgba(111, 124, 255, 0.08);
+  outline-offset: 0.35rem;
+}
+
+body.developer-mode-active .developer-free-layout-container::before {
+  content: none;
+}
+
+body.developer-mode-active .developer-text-editable {
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+body.developer-mode-active .developer-text-editable:focus {
+  user-select: text;
+  cursor: text;
+}

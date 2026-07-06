@@ -81,6 +81,7 @@ let activeWindowImageFilename = "";
 let draggedEditableItem = null;
 let activeLayoutDrag = null;
 let activeBubbleDrag = null;
+let activeTextDrag = null;
 let activePanelDrag = null;
 let personalizationState = null;
 
@@ -127,11 +128,12 @@ const normalizePersonalizationState = (state = {}) => {
       layout: normalized.pages[key]?.layout || {},
       windows: Array.isArray(normalized.pages[key]?.windows) ? normalized.pages[key].windows : [],
       bubbles: normalized.pages[key]?.bubbles || {},
+      textLayout: normalized.pages[key]?.textLayout || {},
     };
   });
 
   if (!normalized.pages[pageKey]) {
-    normalized.pages[pageKey] = { text: {}, layout: {}, windows: [], bubbles: {} };
+    normalized.pages[pageKey] = { text: {}, layout: {}, windows: [], bubbles: {}, textLayout: {} };
   }
 
   return normalized;
@@ -519,6 +521,12 @@ const applyPersonalizationState = (state) => {
     if (textId && pageText[textId]) {
       node.innerHTML = pageText[textId];
     }
+    const textLayout = state.pages?.[pageKey]?.textLayout?.[textId];
+    if (textLayout && Number.isFinite(textLayout.x) && Number.isFinite(textLayout.y)) {
+      node.style.transform = `translate(${textLayout.x}px, ${textLayout.y}px)`;
+      node.dataset.textX = String(textLayout.x);
+      node.dataset.textY = String(textLayout.y);
+    }
   });
 
   if (state.images) {
@@ -583,7 +591,7 @@ const applyPersonalizationState = (state) => {
 
 const collectPersonalizationState = () => {
   const state = normalizePersonalizationState(personalizationState || loadPersonalizationState());
-  const page = state.pages[pageKey] || { text: {}, layout: {}, windows: [], bubbles: {} };
+  const page = state.pages[pageKey] || { text: {}, layout: {}, windows: [], bubbles: {}, textLayout: {} };
   const globalText = { ...state.text };
   const pageText = { ...page.text };
   const images = { ...state.images };
@@ -641,6 +649,7 @@ const collectPersonalizationState = () => {
     layout: pageLayout,
     windows: page.windows || [],
     bubbles: collectTextBubbleState(),
+    textLayout: collectTextLayoutState(),
   };
   state.updatedAt = new Date().toISOString();
   personalizationState = state;
@@ -1109,10 +1118,65 @@ const handleEditableTextKeydown = (event) => {
   }
 };
 
+const collectTextLayoutState = () => {
+  const textLayout = {};
+  getEditableTextNodes().forEach((node) => {
+    const textId = node.dataset.developerTextId;
+    const x = Number.parseFloat(node.dataset.textX || "0");
+    const y = Number.parseFloat(node.dataset.textY || "0");
+    if (textId && (x || y)) {
+      textLayout[textId] = { x: Math.round(x), y: Math.round(y) };
+    }
+  });
+  return textLayout;
+};
+
+const moveTextNode = (node, x, y) => {
+  node.dataset.textX = String(Math.round(x));
+  node.dataset.textY = String(Math.round(y));
+  node.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+};
+
+const setupMovableTextNode = (node) => {
+  if (node.dataset.moveHandlersReady === "true") return;
+  node.dataset.moveHandlersReady = "true";
+  node.addEventListener("pointerdown", (event) => {
+    if (!developerModeEnabled || event.button !== 0 || event.detail > 1 || event.target.closest(".developer-controls, .developer-bubble-controls")) return;
+    const startX = Number.parseFloat(node.dataset.textX || "0");
+    const startY = Number.parseFloat(node.dataset.textY || "0");
+    activeTextDrag = {
+      node,
+      startX,
+      startY,
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      moved: false,
+    };
+  });
+};
+
+document.addEventListener("pointermove", (event) => {
+  if (!activeTextDrag) return;
+  const dx = event.clientX - activeTextDrag.pointerX;
+  const dy = event.clientY - activeTextDrag.pointerY;
+  if (!activeTextDrag.moved && Math.hypot(dx, dy) < 5) return;
+  activeTextDrag.moved = true;
+  event.preventDefault();
+  moveTextNode(activeTextDrag.node, snapToGrid(activeTextDrag.startX + dx), snapToGrid(activeTextDrag.startY + dy));
+});
+
+document.addEventListener("pointerup", () => {
+  if (!activeTextDrag) return;
+  const shouldSave = activeTextDrag.moved;
+  activeTextDrag = null;
+  if (shouldSave) savePersonalizationState();
+});
+
 const setEditableTextMode = (enabled) => {
   getEditableTextNodes().forEach((node) => {
     node.setAttribute("contenteditable", String(enabled));
     node.classList.toggle("developer-text-editable", enabled);
+    if (enabled) setupMovableTextNode(node);
     if (node.dataset.textHandlersReady !== "true") {
       node.dataset.textHandlersReady = "true";
       node.addEventListener("blur", handleEditableTextBlur);
@@ -1237,6 +1301,7 @@ const updateAdminPanelCopy = () => {
           <li>Click highlighted text to edit it; changes save on blur and on exit.</li>
           <li>Click an image or use Upload image to replace it.</li>
           <li>Drag cards freely inside their editable area; they snap to the grid and avoid overlap.</li>
+          <li>Drag existing text to reposition it, or double-click/click into text to edit it.</li>
           <li>Use Add text to create movable, resizable text bubbles inside a card.</li>
           <li>Use font dropdowns on cards or bubbles, then save before exiting.</li>
         </ul>
