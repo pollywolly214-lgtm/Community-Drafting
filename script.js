@@ -40,6 +40,21 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+
+const markCurrentNavigation = () => {
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".nav-pill[href], .nav-cta[href]").forEach((link) => {
+    const linkPage = link.getAttribute("href").split("#")[0].split("?")[0] || "index.html";
+
+    if (linkPage === currentPage) {
+      link.classList.add("is-active");
+      link.setAttribute("aria-current", "page");
+    }
+  });
+};
+
+markCurrentNavigation();
+
 const DEVELOPER_PASSWORD = "abc";
 const PERSONALIZATION_STORAGE_KEY = "draftingSitePersonalizationV1";
 const DEVELOPER_SESSION_KEY = "draftingSiteDeveloperModeActive";

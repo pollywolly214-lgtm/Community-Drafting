@@ -13,9 +13,5 @@
     <path d="M75 118l75 42 75-42M75 200l75 42 75-42" fill="none" stroke="#12375f" stroke-width="3" opacity="0.55"/>
   </g>
 
-  <g stroke="#7b8794" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.75">
-    <path d="M210 330h300"/>
-    <path d="M238 344h244"/>
-  </g>
   <text x="360" y="430" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="30" font-weight="700" fill="#12375f">model</text>
 </svg>
