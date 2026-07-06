@@ -53,6 +53,8 @@ const MIN_CARD_WIDTH = 180;
 const MIN_CARD_HEIGHT = 120;
 const MIN_BUBBLE_WIDTH = 90;
 const MIN_BUBBLE_HEIGHT = 44;
+const EDITING_CANVAS_MIN_HEIGHT = 720;
+const EDITING_CANVAS_EDGE_PADDING = 96;
 const FONT_OPTIONS = [
   { label: "Default", value: "" },
   { label: "Arial", value: "Arial, sans-serif" },
@@ -189,7 +191,16 @@ const clampPanelPosition = (position) => {
   return clampToViewport(position, Math.min(rect.width || 430, window.innerWidth - 16), Math.min(rect.height || 240, window.innerHeight - 16));
 };
 
+const expandContainerToFit = (container, rect) => {
+  if (!container || !container.classList.contains("developer-free-layout-container")) return;
+  const neededHeight = Math.ceil((Number(rect.y) || 0) + (Number(rect.height) || 0) + EDITING_CANVAS_EDGE_PADDING);
+  if (neededHeight > container.clientHeight) {
+    container.style.minHeight = `${neededHeight}px`;
+  }
+};
+
 const clampToContainer = (rect, container, minWidth = MIN_CARD_WIDTH, minHeight = MIN_CARD_HEIGHT) => {
+  expandContainerToFit(container, rect);
   const maxWidth = Math.max(minWidth, container.clientWidth);
   const maxHeight = Math.max(minHeight, container.clientHeight);
   const width = clamp(Number.isFinite(rect.width) ? rect.width : minWidth, minWidth, maxWidth);
@@ -215,6 +226,29 @@ const rectFromElement = (element) => ({
   width: element.offsetWidth,
   height: element.offsetHeight,
 });
+
+const getEditableContentMinimumSize = (element) => {
+  const currentWidth = element.style.width;
+  const currentHeight = element.style.height;
+  element.style.width = "auto";
+  element.style.height = "auto";
+  const minimum = {
+    width: Math.max(MIN_CARD_WIDTH, Math.ceil(element.scrollWidth + 4)),
+    height: Math.max(MIN_CARD_HEIGHT, Math.ceil(element.scrollHeight + 4)),
+  };
+  element.style.width = currentWidth;
+  element.style.height = currentHeight;
+  return minimum;
+};
+
+const normalizeEditableRect = (element, rect, container) => {
+  const minimum = getEditableContentMinimumSize(element);
+  return clampToContainer({
+    ...rect,
+    width: Math.max(rect.width || 0, minimum.width),
+    height: Math.max(rect.height || 0, minimum.height),
+  }, container, minimum.width, minimum.height);
+};
 
 const findNearestNonOverlappingPosition = (candidate, others, container) => {
   const initial = clampToContainer(candidate, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
@@ -265,7 +299,7 @@ const ensureFreeLayoutContainer = (container) => {
     child.dataset.flowX = String(Math.max(0, Math.round(childRect.left - containerRect.left + container.scrollLeft)));
     child.dataset.flowY = String(Math.max(0, Math.round(childRect.top - containerRect.top + container.scrollTop)));
   });
-  container.style.minHeight = `${Math.max(container.clientHeight, ...children.map((child) => Number(child.dataset.flowY || 0) + child.offsetHeight + 16))}px`;
+  container.style.minHeight = `${Math.max(EDITING_CANVAS_MIN_HEIGHT, container.clientHeight, ...children.map((child) => Number(child.dataset.flowY || 0) + child.offsetHeight + EDITING_CANVAS_EDGE_PADDING))}px`;
   container.classList.add("developer-free-layout-container");
   container.dataset.freeLayoutReady = "true";
 };
@@ -538,6 +572,12 @@ const applyPersonalizationState = (state) => {
       element.style.fontFamily = layout.fontFamily;
     }
     renderTextBubbles(element, state.pages?.[pageKey]?.bubbles?.[id] || []);
+    if (Number.isFinite(layout.x) && Number.isFinite(layout.y)) {
+      const container = getLayoutContainer(element);
+      if (container) {
+        applyLayoutRect(element, normalizeEditableRect(element, rectFromElement(element), container));
+      }
+    }
   });
 };
 
@@ -885,7 +925,7 @@ const settleEditableItem = (element, candidate) => {
   const container = getLayoutContainer(element);
   if (!container) return;
   ensureFreeLayoutContainer(container);
-  const clamped = clampToContainer(candidate, container, MIN_CARD_WIDTH, MIN_CARD_HEIGHT);
+  const clamped = normalizeEditableRect(element, candidate, container);
   const rect = findNearestNonOverlappingPosition(clamped, getSiblingRects(element), container);
   applyLayoutRect(element, rect);
 };
@@ -1014,9 +1054,12 @@ const addDeveloperControls = () => {
       createControlButton("↑", "Move earlier", () => moveEditableItem(element, -1)),
       createControlButton("↓", "Move later", () => moveEditableItem(element, 1)),
       createControlButton("Add text", "Add a movable text bubble inside this card", () => addTextBubble(element)),
-      createControlButton("Reset size", "Clear custom width and height", () => {
-        element.style.width = "";
-        element.style.height = "";
+      createControlButton("Fit content", "Grow this card so its contents fit cleanly", () => {
+        const container = getLayoutContainer(element);
+        if (container) {
+          settleEditableItem(element, rectFromElement(element));
+          savePersonalizationState();
+        }
       }),
       createFontSelect(element),
     );

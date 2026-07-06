@@ -906,3 +906,52 @@ body.developer-mode-active .developer-bubble-controls {
     margin-bottom: 1rem;
   }
 }
+
+/* Follow-up Developer Mode usability adjustments */
+body.developer-mode-active .developer-free-layout-container {
+  min-height: 720px;
+  padding: 0.75rem;
+  border: 2px dashed rgba(111, 124, 255, 0.32);
+  box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.16);
+}
+
+body.developer-mode-active .developer-free-layout-container::before {
+  content: "Editable canvas — drag cards anywhere in this bordered area";
+  position: absolute;
+  right: 0.75rem;
+  top: 0.45rem;
+  z-index: 1;
+  max-width: min(360px, calc(100% - 1.5rem));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--slate-500);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.32rem 0.58rem;
+  pointer-events: none;
+}
+
+body.developer-mode-active .developer-free-layout-item {
+  min-width: 180px;
+  min-height: 120px;
+  scrollbar-gutter: stable;
+}
+
+body:not(.developer-mode-active) .developer-free-layout-item {
+  overflow: hidden;
+}
+
+body.developer-mode-active .developer-editable--active :is(h1, h2, h3, h4, p, figcaption, li, span[data-admin-key]) {
+  position: relative;
+  z-index: 2;
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.12rem;
+}
+
+body.developer-mode-active .developer-editable--active :is(h1, h2, h3, h4, p, figcaption, li, span[data-admin-key]):hover {
+  background: rgba(255, 245, 235, 0.74);
+}
+
+body.developer-mode-active .developer-controls {
+  z-index: 6;
+}
